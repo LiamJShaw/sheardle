@@ -6,8 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S H E A R D L E</title>
     <script src="main.js" defer></script>
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <body>
+      <div class="container">
+        <header>
+            <div class="info">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+
+            </div>
+            <h2 class="title">Sheardle</h2>
+            <div class="how-to-play">
+                <i class="fa fa-question-circle" aria-hidden="true"></i>
+            </div>
+        </header>
+
+        <div class="guess-container">
+            <div class="guess"></div>
+            <div class="guess"></div>
+            <div class="guess"></div>
+            <div class="guess"></div>
+            <div class="guess"></div>
+            <div class="guess"></div>
+        </div>
+<!-- 
+        <div class="seek-bar">
+            <div class="buffer"></div>
+            <div class="section 1"></div>
+            <div class="section 2"></div>
+            <div class="section 3"></div>
+            <div class="section 4"></div>
+            <div class="section 5"></div>
+            <div class="section 6"></div>
+            <div class="buffer"></div>
+        </div> -->
+
+
+        <div class="play-container">
+
+            <div class="seek-bar-container">
+                <div class="seek-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
     
+
+            <div class="play-button-container">
+                <div class="elapsed-time">0:00</div>
+                <div class="play-button">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </div>
+                <div class="total-time">0:16</div>
+            </div>
+
+            <div class="search-container">
+                <input type="text" class="spotify-search" placeholder="Search for the artist/title">
+            </div>
+
+            <div class="buttons-container">
+                <button class="skip">SKIP (+1s)</button>
+                <button class="submit">SUBMIT</button>
+            </div>
+        </div>
+      </div>
 </body>
 </html>
