@@ -205,3 +205,10 @@ header {
     line-height: 1rem;
   }
   
+  button[disabled] {
+    background-color: gray;
+    color: white;
+    cursor: not-allowed;
+  }
+  
+
