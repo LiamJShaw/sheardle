@@ -183,21 +183,41 @@ const searchInput = document.querySelector('.spotify-search');
 
 searchInput.addEventListener('input', debounce((event) => {
     const query = event.target.value;
+    const resultsContainer = document.getElementById('results-container');
+    resultsContainer.innerHTML = '';
+    resultsContainer.style.display = 'none';
   
     if (query) {
       searchTrack(query)
       .then(response => {
-        response.forEach((track, index) => {
-          console.log(`Result ${index + 1}:`);
-          console.log("Artist: ", track.artists[0].name);
-          console.log("Track: ", track.name);
-          console.log("ID: ", track.id);
-          console.log('----------------');
-        });
+        if (response.length > 0) {
+          response.forEach((track, index) => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+            resultItem.textContent = `${track.artists[0].name} - ${track.name}`;
+            resultItem.setAttribute('data-track-id', track.id);
+  
+            resultItem.addEventListener('click', (event) => {
+              const selectedTrackId = event.target.getAttribute('data-track-id');
+              console.log('Selected track ID:', selectedTrackId);
+  
+              // Store the selected track ID somewhere
+              // document.getElementById('hidden-input-field').value = selectedTrackId;
+  
+              // Update the search input with the selected result and hide the results container
+              searchInput.value = event.target.textContent;
+              resultsContainer.style.display = 'none';
+            });
+  
+            resultsContainer.appendChild(resultItem);
+          });
+  
+          resultsContainer.style.display = 'block';
+        }
       })
       .catch(error => {
-        // Handle any errors here
         console.error(error);
       });
     }
   }, 750));
+  

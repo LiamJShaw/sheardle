@@ -24,7 +24,7 @@ export async function searchTrack(searchTerm, market = 'GB') {
         const params = new URLSearchParams({
             q: searchTerm,
             type: 'track',
-            limit: 5,
+            limit: 10,
             market
         });
 
