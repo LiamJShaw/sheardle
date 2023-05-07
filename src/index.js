@@ -2,28 +2,56 @@ import './styles/styles.css'
 
 import { searchTrack } from './spotify';
 
+import { 
+        addSkippedTurnToBoard, 
+        addGuessToBoard,
+        enableSubmitButton,
+        disableSubmitButton 
+    } from './UI';
+
+import { 
+        getNewGameTrack,
+        newGame
+    } from './sheardle';
+
 const playButton = document.querySelector(".play-button");
 const skipButton = document.querySelector(".skip");
 const seekBarBackground = document.querySelector(".seek-bar-background");
 const progressBar = document.querySelector(".seek-bar-progress");
 const elapsedTime = document.querySelector(".elapsed-time");
 
-const audio = new Audio("https://p.scdn.co/mp3-preview/328e1de49e17b4e1ace2e8f6cdd10b0776a16bc7?cid=74ac949ca587402484dcef1408b4d7f3");
 
-audio.addEventListener("timeupdate", () => {
-    const playDuration = allowedDurations[currentTurn - 1];
-    const progressPercentage = (audio.currentTime / playDuration) * 100;
-    progressBar.style.width = `${progressPercentage}%`;
+// Get track for game. Move to Sheardle.JS
 
-    const minutes = Math.floor(audio.currentTime / 60);
-    const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
-    elapsedTime.textContent = `${minutes}:${seconds}`;
+const gameTrack = getNewGameTrack();
+let audio;
+
+gameTrack.then(response => {
+    const previewURL = response[0].preview_url;
+
+    audio = new Audio(previewURL);
+
+    audio.addEventListener("timeupdate", () => {
+        const playDuration = allowedDurations[currentTurn - 1];
+        const progressPercentage = (audio.currentTime / playDuration) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+    
+        const minutes = Math.floor(audio.currentTime / 60);
+        const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
+        elapsedTime.textContent = `${minutes}:${seconds}`;
+    });
+
 });
 
-let currentTurn = 1;
+
+
 const allowedDurations = [1, 2, 4, 7, 11, 16];
-let endTime; // Declare endTime variable outside the event listener
+
+let currentTurn = 1;
+let endTime; // endTime variable outside the event listener for skipping while playing
 let timeoutID; // Declare timeoutID variable to store the setTimeout identifier
+
+let selectedTrack;
 
 function updateSeekBarBackground(turn) {
     const playDuration = allowedDurations[turn - 1];
@@ -51,7 +79,7 @@ playButton.addEventListener("click", () => {
 
         requestAnimationFrame(updateProgressBar);
 
-        clearTimeout(timeoutID); // Clear any existing timeout
+        clearTimeout(timeoutID);
         timeoutID = setTimeout(() => {
             audio.pause();
             playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
@@ -62,38 +90,7 @@ playButton.addEventListener("click", () => {
     }
 });
 
-// Update skipButton click event handler
-skipButton.addEventListener("click", () => {
-    if (currentTurn < allowedDurations.length) {
-        currentTurn++;
-    }
 
-    // Update endTime and the timeout
-    if (!audio.paused) {
-        const playDuration = allowedDurations[currentTurn - 1];
-        endTime = Math.min(audio.duration, playDuration);
-        const remainingTime = (endTime - audio.currentTime) * 1000;
-
-        clearTimeout(timeoutID); // Clear the existing timeout
-        timeoutID = setTimeout(() => {
-            audio.pause();
-            playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-        }, remainingTime);
-    }
-
-    updateSeekBarBackground(currentTurn);
-    updateSkipButtonText();
-});
-
-// Function to update the skip button text
-function updateSkipButtonText() {
-    if (currentTurn < allowedDurations.length) {
-        const skipSeconds = allowedDurations[currentTurn] - allowedDurations[currentTurn - 1];
-        skipButton.textContent = `SKIP (+${skipSeconds}s)`;
-    } else {
-        skipButton.textContent = "SKIP";
-    }
-}
 
 function createMarker(duration) {
     const marker = document.createElement("div");
@@ -181,6 +178,11 @@ function debounce(func, wait, immediate) {
 
 const searchInput = document.querySelector('.spotify-search');
 
+// No debounce needed for disabling the button
+searchInput.addEventListener('input', () => {
+    disableSubmitButton();
+})
+
 searchInput.addEventListener('input', debounce((event) => {
     const query = event.target.value;
     const resultsContainer = document.getElementById('results-container');
@@ -201,12 +203,10 @@ searchInput.addEventListener('input', debounce((event) => {
               const selectedTrackId = event.target.getAttribute('data-track-id');
               console.log('Selected track ID:', selectedTrackId);
   
-              // Store the selected track ID somewhere
-              // document.getElementById('hidden-input-field').value = selectedTrackId;
-  
               // Update the search input with the selected result and hide the results container
               searchInput.value = event.target.textContent;
               resultsContainer.style.display = 'none';
+              enableSubmitButton();
             });
   
             resultsContainer.appendChild(resultItem);
@@ -219,5 +219,52 @@ searchInput.addEventListener('input', debounce((event) => {
         console.error(error);
       });
     }
-  }, 750));
+  }, 500));
   
+
+// Submit button
+
+const submitButton = document.querySelector('.submit');
+
+submitButton.addEventListener('click', () => {
+
+    selectedTrack = searchInput.value;
+
+    addGuessToBoard(selectedTrack, currentTurn);
+    currentTurn++;
+
+});
+
+// Skip button
+
+skipButton.addEventListener("click", () => {
+    if (currentTurn < allowedDurations.length) {
+        addSkippedTurnToBoard(currentTurn);
+        currentTurn++;
+    }
+
+    if (!audio.paused) {
+        const playDuration = allowedDurations[currentTurn - 1];
+        endTime = Math.min(audio.duration, playDuration);
+        const remainingTime = (endTime - audio.currentTime) * 1000;
+
+        clearTimeout(timeoutID);
+        timeoutID = setTimeout(() => {
+            audio.pause();
+            playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+        }, remainingTime);
+    }
+
+    updateSeekBarBackground(currentTurn);
+    updateSkipButtonText();
+});
+
+// Function to update the skip button text
+function updateSkipButtonText() {
+    if (currentTurn < allowedDurations.length) {
+        const skipSeconds = allowedDurations[currentTurn] - allowedDurations[currentTurn - 1];
+        skipButton.textContent = `SKIP (+${skipSeconds}s)`;
+    } else {
+        skipButton.textContent = "SKIP";
+    }
+}

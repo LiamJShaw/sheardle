@@ -38,8 +38,6 @@ export async function searchTrack(searchTerm, market = 'GB') {
             return data.tracks.items;
         }
 
-        console.log(response);
-
         return [];
     }
 
