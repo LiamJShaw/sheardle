@@ -43,3 +43,21 @@ export async function searchTrack(searchTerm, market = 'GB') {
 
     return await search(searchTerm);
 }
+
+export async function getTrackByID(trackID, market = 'GB') {
+    const accessToken = await tokenManager.getAccessToken();
+  
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+  
+    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackID}?market=${market}`, {
+      headers: headers,
+    });
+  
+    if (response.status === 200) {
+      return await response.json();
+    }
+  
+    return null;
+  }  
