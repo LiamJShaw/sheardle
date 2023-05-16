@@ -1,7 +1,10 @@
-import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
-import { allowedDurations, getCurrentTurn } from './sheardle';
+import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime, getGameTrackAudio } from './audioManager';
+import { allowedDurations, getCurrentTurn, moveToNextTurn, getCurrentTrackID, checkGuess, saveNewGuess, skipTurn } from './sheardle';
 import { searchTrack } from './spotify';
 
+export function initUI() {
+  updateSeekBarBackground(getCurrentTurn());
+}
 
 // Guess board
 export function addGuessToBoard(guess, turn) {
@@ -40,11 +43,10 @@ export function addSkippedTurnToBoard(turn) {
 
 export function clearSearchBox() {
   const searchBox = document.querySelector('.spotify-search');
-  searchBox.textContent = '';
+  searchBox.value = '';
 }
 
-
-// Play button
+// Play/Pause button
 const playButton = document.querySelector(".play-button");
 playButton.addEventListener("click", handlePlayButtonClick);
 
@@ -54,11 +56,9 @@ function handlePlayButtonClick() {
         playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
     } else {
         pauseAudio();
-        playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+        changePlayButtonIconToPlay();
     }
 }
-
-
 
 // Skip button
 const skipButton = document.querySelector(".skip");
@@ -67,27 +67,15 @@ skipButton.addEventListener("click", handleSkipButtonClick);
 function handleSkipButtonClick() {
     if (getCurrentTurn() < allowedDurations.length) {
         addSkippedTurnToBoard(getCurrentTurn());
-        handleNextTurn();
-    }
-
-    if (!audio.paused) {
-        pauseAudioAndChangeIcon();
-    }
+        skipTurn();
+      }
 
     updateSeekBarBackground(getCurrentTurn());
     updateSkipButtonText();
 }
 
-function pauseAudioAndChangeIcon() {
-    const playDuration = allowedDurations[getCurrentTurn()];
-    endTime = Math.min(audio.duration, playDuration);
-    const remainingTime = (endTime - audio.currentTime) * 1000;
-
-    clearTimeout(timeoutID);
-    timeoutID = setTimeout(() => {
-        audio.pause();
-        playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-    }, remainingTime);
+function changePlayButtonIconToPlay() {
+  playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
 }
 
 function updateSkipButtonText() {
@@ -99,24 +87,24 @@ function updateSkipButtonText() {
     }
 }
 
-
 // Submit button
 const submitButton = document.querySelector('.submit');
 
 submitButton.addEventListener('click', () => {
 
-    const gameTrack = getGameTrack();
 
-    gameTrack.then(response => {
-        const guess = checkGuess(selectedTrackID, response.id);
+    const gameTrackID = getCurrentTrackID();
+    const guess = checkGuess(selectedTrackID, gameTrackID);
 
-        console.log("Guess is ", guess);
+    console.log("Guess is ", guess);
+
+    addGuessToBoard(searchInput.value, getCurrentTurn());
+
+    saveNewGuess(searchInput.value);
     
-        addGuessToBoard(searchInput.value, getCurrentTurn());
-        // moveToNextTurn();
-        handleNextTurn(); // This instead of the above to bring game logic here rather than other way around
-    });
-});
+    disableSubmitButton();
+    clearSearchBox();
+  });
 
 export function enableSubmitButton() {
   const submitButton = document.querySelector('.submit');
@@ -129,19 +117,26 @@ export function disableSubmitButton() {
 }
 
 
-
 // Progress bar
-export function updateProgressBar() {
-  const progressBar = document.querySelector(".seek-bar-progress");
+const progressBar = document.querySelector(".seek-bar-progress");
 
+export function updateProgressBar() {
   const progressPercentage = ((getAudioCurrentTime() / 16) * 100 + 1);
   progressBar.style.width = `${progressPercentage}%`;
 
   if (!isAudioPaused()) {
       requestAnimationFrame(updateProgressBar);
   } else {
-    // Change play button icon. Existing function needs to be less specific.
+    changePlayButtonIconToPlay(); 
   }
+}
+
+const seekBarBackground = document.querySelector(".seek-bar-background");
+
+function updateSeekBarBackground(turn) {
+    const playDuration = allowedDurations[turn - 1];
+    const percentage = (playDuration / 16) * 100;
+    seekBarBackground.style.width = `${percentage}%`;
 }
 
 
@@ -159,7 +154,7 @@ function createMarker(duration) {
     return marker;
 }
 
-export function createMarkers() {
+export function createMarkers(allowedDurations) {
     const markersContainer = document.querySelector(".seek-bar-markers");
     allowedDurations.forEach(duration => {
         const marker = createMarker(duration + 0.1);
@@ -167,9 +162,9 @@ export function createMarkers() {
     });
 }
 
-
 // Search bar
 const searchInput = document.querySelector('.spotify-search');
+let selectedTrackID;
 
 // Debounce function to stop the auto-search firing too often
 function debounce(func, wait, immediate) {
@@ -213,9 +208,8 @@ searchInput.addEventListener('input', debounce((event) => {
             resultItem.setAttribute('data-track-id', track.id);
   
             resultItem.addEventListener('click', (event) => {
-              const selectedTrackId = event.target.getAttribute('data-track-id');
-              selectedTrackID = selectedTrackId;
-              console.log('Selected track ID:', selectedTrackId);
+              selectedTrackID = event.target.getAttribute('data-track-id');;
+              console.log('Selected track ID:', event.target.getAttribute('data-track-id'));
   
               // Update the search input with the selected result and hide the results container
               searchInput.value = event.target.textContent;

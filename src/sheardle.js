@@ -1,11 +1,8 @@
-import { getTrackByID } from "./spotify";
 import { getTodaysTrackID } from "./trackSelection";
 import { saveGameState } from "./localStorage";
-import { initAudio } from './audioManager';
+import { initAudio } from "./audioManager";
 
 export const allowedDurations = [1, 2, 4, 7, 11, 16];
-
-let gameTrack = null;
 
 let gameState = {
   currentTurn: 1,
@@ -21,73 +18,56 @@ export function setupNewGame() {
   gameState.currentTurn = 1;
   gameState.guesses = [];
   gameState.trackID = todaysTrackID;
+
+  initAudio(todaysTrackID);
+
+  console.log("New game state", gameState);
 }
 
+export function importGameState(gameState) {
+  console.log(gameState);
 
-
-let trackReadyResolve;
-const trackReady = new Promise((resolve) => {
-  trackReadyResolve = resolve;
-});
-
-export const fetchNewTrack = async (trackID) => {
-    const fetchedTrack = await getTrackByID(trackID);
-    gameTrack = fetchedTrack;
-    trackReadyResolve(gameTrack);
-};
-
-export const getCurrentTrack = () => trackReady;
-
-export const getGameTrackID = async () => {
-    const track = await getCurrentTrack();
-    return track.id;
-};
-
-export function checkGuess(guess, gameTrack) {
-    console.log("Guess:", guess);
-    console.log("Game track:", gameTrack);
-  
-    return guess === gameTrack;
+  // This will be required here once this function is written
+  // initAudio(gameState.trackID);
 }
 
-export function saveNewGuess(guess) {
-  gameState.currentTurn++;
-  
+export function checkGuess(guessedTrackID, gameTrackID) {
+  console.log("Guess:", guessedTrackID);
+  console.log("Game track:", gameTrackID);
+
+  return guessedTrackID === gameTrackID;
+}
+
+export async function saveNewGuess(guess) {
+  console.log("New game state before latest guess", gameState);
+
   gameState.guesses.push(guess);
+  moveToNextTurn();
 
-  saveGameState(gameState);
+  await saveGameState(gameState); // Await the saveGameState function
+
+  console.log("New game state after latest guess", gameState);
 }
+
 
 export function skipTurn() {
-  gameState.currentTurn++;
-
   // Save a null guess to represent a skipped turn
   gameState.guesses.push(null);
 
+  moveToNextTurn();
+}
+
+export function moveToNextTurn() {
+
+  // If final turn, move to game results screen
+
+  gameState.currentTurn++;
   saveGameState(gameState);
 }
 
-export function getCurrentDay(startDate) {
-  // Get the current date
-  let currentDate = new Date();
-
-  // Convert both dates to milliseconds
-  let startDateTime = new Date(startDate).getTime();
-  let currentDateTime = currentDate.getTime();
-
-  // Calculate the difference in milliseconds
-  let differenceInTime = currentDateTime - startDateTime;
-
-  // Convert the difference in milliseconds to days
-  // 1 day = 24 hours = 1440 minutes = 86400 seconds = 86400000 milliseconds
-  let differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-
-  return differenceInDays;
-}
-
-
-
 export const getCurrentTurn = () => gameState.currentTurn;
+export const getCurrentTrackID = () => gameState.trackID;
 
-export const moveToNextTurn = () => currentTurn++;
+
+
 

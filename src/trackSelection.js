@@ -67,7 +67,8 @@ function getCurrentDay(startDate) {
 
 export function getTodaysTrackID(startDate) {
 
+    // For now, we just get track 0
     return trackSelection[0];
 
-    // return trackSelection[getCurrentDay()];
+    return trackSelection[getCurrentDay(startDate)];
 }

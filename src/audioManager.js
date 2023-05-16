@@ -1,8 +1,11 @@
 // Import game state manipulation functions
 import { getCurrentTurn, allowedDurations } from './sheardle.js';
 import { getTrackByID } from './spotify.js';
+
+// This should be a callback, to avoid co-dependency?
 import { updateProgressBar } from './UI.js';
 
+// Required here so that the user can pause and resume
 let audio;
 let endTime;
 let timeoutID;
@@ -29,7 +32,15 @@ export function playAudio() {
 }
 
 export function pauseAudio() {
-    audio.pause();
+    const playDuration = allowedDurations[getCurrentTurn()];
+    endTime = Math.min(audio.duration, playDuration);
+    const remainingTime = (endTime - getAudioCurrentTime()) * 1000;
+
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(() => {
+        pauseAudio();
+        // changePlayButtonIconToPlay();
+      }, remainingTime);
 }
 
 export function isAudioPaused() {
@@ -38,10 +49,4 @@ export function isAudioPaused() {
 
 export function getAudioCurrentTime() {
     return audio.currentTime;
-}
-
-
-// Update audio // Reset audio?
-export function updateAudio() {
-    audio.currentTime = 0;
 }
