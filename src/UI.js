@@ -1,59 +1,174 @@
-import { getCurrentTurn, 
-         getAllowedDurations, 
-         moveToNextTurn, 
-         getCurrentGameTrack,
-         getGameTrackAudio,
-         getCurrentTrack,
-         checkGuess
-    } from "./sheardle";
-
+import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
+import { allowedDurations, getCurrentTurn } from './sheardle';
 import { searchTrack } from './spotify';
 
-import { getGameTrack } from './gameState';
 
+// Guess board
 export function addGuessToBoard(guess, turn) {
-    const guessContainer = document.querySelector('.guess-container');
-    const guessDiv = guessContainer.children[turn - 1];
-    
-    // Create the red 'x' icon
-    const redXIcon = document.createElement('span');
-    redXIcon.textContent = 'x';
-    redXIcon.classList.add('red-x-icon');
-    guessDiv.appendChild(redXIcon);
+  const guessContainer = document.querySelector('.guess-container');
+  const guessDiv = guessContainer.children[turn - 1];
+  
+  // Create the red 'x' icon
+  const redXIcon = document.createElement('span');
+  redXIcon.textContent = 'x';
+  redXIcon.classList.add('red-x-icon');
+  guessDiv.appendChild(redXIcon);
 
-    // Add the track info text to the guess div
-    const guessText = document.createElement('p');
-    guessText.textContent = guess;
-    guessDiv.appendChild(guessText);
-  }
+  // Add the track info text to the guess div
+  const guessText = document.createElement('p');
+  guessText.textContent = guess;
+  guessDiv.appendChild(guessText);
+}
+
+export function addSkippedTurnToBoard(turn) {
+  const guessContainer = document.querySelector('.guess-container');
+  const guessDiv = guessContainer.children[turn - 1];
   
-  export function addSkippedTurnToBoard(turn) {
-    const guessContainer = document.querySelector('.guess-container');
-    const guessDiv = guessContainer.children[turn - 1];
+  // Create the red 'x' icon
+  const redXIcon = document.createElement('span');
+  redXIcon.textContent = 'x';
+  redXIcon.classList.add('red-x-icon');
+
+  // Add the red 'x' icon to the guess div
+  guessDiv.appendChild(redXIcon);
+
+  // Add the "Skipped turn" text to the guess div
+  const skippedTurnText = document.createElement('p');
+  skippedTurnText.textContent = "Skipped";
+  guessDiv.appendChild(skippedTurnText);
+}
+
+export function clearSearchBox() {
+  const searchBox = document.querySelector('.spotify-search');
+  searchBox.textContent = '';
+}
+
+
+// Play button
+const playButton = document.querySelector(".play-button");
+playButton.addEventListener("click", handlePlayButtonClick);
+
+function handlePlayButtonClick() {
+    if (isAudioPaused()) {
+        playAudio();
+        playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+    } else {
+        pauseAudio();
+        playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+    }
+}
+
+
+
+// Skip button
+const skipButton = document.querySelector(".skip");
+skipButton.addEventListener("click", handleSkipButtonClick);
+
+function handleSkipButtonClick() {
+    if (getCurrentTurn() < allowedDurations.length) {
+        addSkippedTurnToBoard(getCurrentTurn());
+        handleNextTurn();
+    }
+
+    if (!audio.paused) {
+        pauseAudioAndChangeIcon();
+    }
+
+    updateSeekBarBackground(getCurrentTurn());
+    updateSkipButtonText();
+}
+
+function pauseAudioAndChangeIcon() {
+    const playDuration = allowedDurations[getCurrentTurn()];
+    endTime = Math.min(audio.duration, playDuration);
+    const remainingTime = (endTime - audio.currentTime) * 1000;
+
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(() => {
+        audio.pause();
+        playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+    }, remainingTime);
+}
+
+function updateSkipButtonText() {
+    if (getCurrentTurn() < allowedDurations.length) {
+        const skipSeconds = allowedDurations[getCurrentTurn()] - allowedDurations[getCurrentTurn() - 1];
+        skipButton.textContent = `SKIP (+${skipSeconds}s)`;
+    } else {
+        skipButton.textContent = "SKIP";
+    }
+}
+
+
+// Submit button
+const submitButton = document.querySelector('.submit');
+
+submitButton.addEventListener('click', () => {
+
+    const gameTrack = getGameTrack();
+
+    gameTrack.then(response => {
+        const guess = checkGuess(selectedTrackID, response.id);
+
+        console.log("Guess is ", guess);
     
-    // Create the red 'x' icon
-    const redXIcon = document.createElement('span');
-    redXIcon.textContent = 'x';
-    redXIcon.classList.add('red-x-icon');
-  
-    // Add the red 'x' icon to the guess div
-    guessDiv.appendChild(redXIcon);
-  
-    // Add the "Skipped turn" text to the guess div
-    const skippedTurnText = document.createElement('p');
-    skippedTurnText.textContent = "Skipped";
-    guessDiv.appendChild(skippedTurnText);
+        addGuessToBoard(searchInput.value, getCurrentTurn());
+        // moveToNextTurn();
+        handleNextTurn(); // This instead of the above to bring game logic here rather than other way around
+    });
+});
+
+export function enableSubmitButton() {
+  const submitButton = document.querySelector('.submit');
+  submitButton.removeAttribute("disabled");
+}
+
+export function disableSubmitButton() {
+  const submitButton = document.querySelector('.submit');
+  submitButton.setAttribute("disabled", "");
+}
+
+
+
+// Progress bar
+export function updateProgressBar() {
+  const progressBar = document.querySelector(".seek-bar-progress");
+
+  const progressPercentage = ((getAudioCurrentTime() / 16) * 100 + 1);
+  progressBar.style.width = `${progressPercentage}%`;
+
+  if (!isAudioPaused()) {
+      requestAnimationFrame(updateProgressBar);
+  } else {
+    // Change play button icon. Existing function needs to be less specific.
   }
-  
-  export function clearSearchBox() {
-    const searchBox = document.querySelector('.spotify-search');
-    searchBox.textContent = '';
-  }
+}
+
+
+// Allowed length to play markers
+function createMarker(duration) {
+    const marker = document.createElement("div");
+    const percentage = (duration / 16) * 100;
+
+    marker.style.width = "1px";
+    marker.style.height = "100%";
+    marker.style.position = "absolute";
+    marker.style.left = `${percentage}%`;
+    marker.style.backgroundColor = "#ffffff";
+
+    return marker;
+}
+
+export function createMarkers() {
+    const markersContainer = document.querySelector(".seek-bar-markers");
+    allowedDurations.forEach(duration => {
+        const marker = createMarker(duration + 0.1);
+        markersContainer.appendChild(marker);
+    });
+}
 
 
 // Search bar
-let selectedTrackID;
-
 const searchInput = document.querySelector('.spotify-search');
 
 // Debounce function to stop the auto-search firing too often
@@ -120,7 +235,6 @@ searchInput.addEventListener('input', debounce((event) => {
     }
   }, 500));
 
-
 // Search results
 const resultsContainer = document.getElementById('results-container');
 document.addEventListener('click', (event) => {
@@ -129,170 +243,3 @@ document.addEventListener('click', (event) => {
     resultsContainer.style.display = 'none';
   }
 });
-
-
-// Submit button
-const submitButton = document.querySelector('.submit');
-
-submitButton.addEventListener('click', () => {
-
-    const gameTrack = getGameTrack();
-
-    gameTrack.then(response => {
-        const guess = checkGuess(selectedTrackID, response.id);
-
-        console.log("Guess is ", guess);
-    
-        addGuessToBoard(searchInput.value, getCurrentTurn());
-        moveToNextTurn();
-    });
-});
-
-export function enableSubmitButton() {
-    const submitButton = document.querySelector('.submit');
-    submitButton.removeAttribute("disabled");
-}
-  
-export function disableSubmitButton() {
-    const submitButton = document.querySelector('.submit');
-    submitButton.setAttribute("disabled", "");
-}
-
-
-// Play button
-const playButton = document.querySelector(".play-button");
-const elapsedTime = document.querySelector(".elapsed-time");
-
-let audio;
-let endTime; // Outside the event listener for skipping while playing
-let timeoutID;
-
-async function initAudio() {
-
-    let gameTrack = {};
-
-    audio = new Audio(gameTrack.preview_url);
-    
-    audio.addEventListener("timeupdate", () => {
-      const playDuration = allowedDurations[getCurrentTurn() - 1];
-      const progressPercentage = (audio.currentTime / playDuration) * 100;
-      progressBar.style.width = `${progressPercentage}%`;
-  
-      const minutes = Math.floor(audio.currentTime / 60);
-      const seconds = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
-      elapsedTime.textContent = `${minutes}:${seconds}`;
-    });
-
-    playButton.addEventListener("click", () => {
-
-        getCurrentTrack().then(track => {
-            console.log(track);
-        });
-
-        
-        if (audio.paused) {
-            const playDuration = allowedDurations[getCurrentTurn() - 1];
-            endTime = Math.min(audio.duration, playDuration);
-    
-            audio.currentTime = 0;
-            audio.play();
-            playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
-    
-            requestAnimationFrame(updateProgressBar);
-    
-            clearTimeout(timeoutID);
-            timeoutID = setTimeout(() => {
-                audio.pause();
-                playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-            }, endTime * 1000);
-        } else {
-            audio.pause();
-            playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-        }
-    });
-}
-
-initAudio();
-
-
-// Skip button
-const skipButton = document.querySelector(".skip");
-
-skipButton.addEventListener("click", () => {
-    if (getCurrentTurn() < allowedDurations.length) {
-        addSkippedTurnToBoard(getCurrentTurn());
-        moveToNextTurn();
-    }
-
-    if (!audio.paused) {
-        const playDuration = allowedDurations[getCurrentTurn() - 1];
-        endTime = Math.min(audio.duration, playDuration);
-        const remainingTime = (endTime - audio.currentTime) * 1000;
-
-        clearTimeout(timeoutID);
-        timeoutID = setTimeout(() => {
-            audio.pause();
-            playButton.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-        }, remainingTime);
-    }
-
-    updateSeekBarBackground(getCurrentTurn());
-    updateSkipButtonText();
-});
-
-function updateSkipButtonText() {
-    if (getCurrentTurn() < allowedDurations.length) {
-        const skipSeconds = allowedDurations[getCurrentTurn()] - allowedDurations[getCurrentTurn() - 1];
-        skipButton.textContent = `SKIP (+${skipSeconds}s)`;
-    } else {
-        skipButton.textContent = "SKIP";
-    }
-}
-
-
-// Seek bar
-const seekBarBackground = document.querySelector(".seek-bar-background");
-const progressBar = document.querySelector(".seek-bar-progress");
-
-const allowedDurations = getAllowedDurations();
-
-function updateSeekBarBackground(turn) {
-    const playDuration = allowedDurations[turn - 1];
-    const percentage = (playDuration / 16) * 100;
-    seekBarBackground.style.width = `${percentage}%`;
-}
-
-function updateProgressBar() {
-    const progressPercentage = ((audio.currentTime / 16) * 100 + 1);
-    progressBar.style.width = `${progressPercentage}%`;
-
-    if (!audio.paused) {
-        requestAnimationFrame(updateProgressBar);
-    }
-}
-
-// Initialize the seek bar background for the first turn
-updateSeekBarBackground(getCurrentTurn());
-updateSkipButtonText();
-
-// Allowed length to play markers
-function createMarker(duration) {
-    const marker = document.createElement("div");
-    const percentage = (duration / 16) * 100;
-
-    marker.style.width = "1px";
-    marker.style.height = "100%";
-    marker.style.position = "absolute";
-    marker.style.left = `${percentage}%`;
-    marker.style.backgroundColor = "#ffffff";
-
-    return marker;
-}
-
-const markersContainer = document.querySelector(".seek-bar-markers");
-allowedDurations.forEach(duration => {
-    const marker = createMarker(duration + 0.1);
-    markersContainer.appendChild(marker);
-});
-
-

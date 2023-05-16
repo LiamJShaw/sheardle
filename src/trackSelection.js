@@ -1,4 +1,4 @@
-export const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
+const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 '2dlEdDEmuQsrcXaAL3Znzi',
 '62LJFaYihsdVrrkgUOJC05',
 '0HEmnAUT8PHznIAAmVXqFJ',
@@ -40,5 +40,34 @@ export const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 '54X78diSLoUDI3joC2bjMz',
 '0QeI79sp1vS8L3JgpEO7mD'];
 
-// In this function, I'm going to set up a "start date" for the app.
-// I'll base which track is the track of the day from the distance in time from this date
+// // In this function, I'm going to set up a "start date" for the app.
+// // I'll base which track is the track of the day from the distance in time from this date
+
+
+function getCurrentDay(startDate) {
+    // Get the current date in local time
+    let currentDate = new Date();
+  
+    // Set both dates to midnight (start of the day) in local time
+    startDate = new Date(new Date(startDate).setHours(0,0,0,0));
+    currentDate = new Date(currentDate.setHours(0,0,0,0));
+  
+    // Convert both dates to milliseconds
+    let startDateTime = startDate.getTime();
+    let currentDateTime = currentDate.getTime();
+  
+    // Calculate the difference in milliseconds
+    let differenceInTime = currentDateTime - startDateTime;
+  
+    // Convert the difference in milliseconds to days
+    let differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+  
+    return differenceInDays;
+}
+
+export function getTodaysTrackID(startDate) {
+
+    return trackSelection[0];
+
+    // return trackSelection[getCurrentDay()];
+}
