@@ -1,6 +1,7 @@
 import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
 import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNewGuessToGameState, addSkippedTurnToGameState, checkForSpotifyDupes } from './sheardle';
-import { searchTrack } from './spotify';
+import { searchTrack, getTrackByID } from './spotify';
+import { gameEnd } from './resultsScreen';
 
 export function initUI() {
   updateSeekBarBackground(getCurrentTurn());
@@ -115,11 +116,50 @@ function updateSkipButtonText() {
     }
 }
 
-// Submit button
+// // Submit button
+// const submitButton = document.querySelector('.submit');
+
+// submitButton.addEventListener('click', () => {
+
+//     const gameTrackID = getCurrentTrackID();
+//     const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
+//     const searchInputValue = searchInput.value;
+//     const currentTurnAtTimeOfSubmit = getCurrentTurn();
+
+//     console.log("Guess is:", guessIsCorrect);
+
+//     if (!guessIsCorrect) {
+//       console.log("Checking for Spotify duplicates...");
+//       checkForSpotifyDupes(searchInput.value).then(response => {
+//         console.log("Included in dupes:", response);
+
+//         if (response) {
+//           console.log(searchInputValue);
+//           addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+//         } else {
+//           addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+//         }
+
+//       })
+//     } else {
+//       addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+//     }
+
+//     saveNewGuessToGameState(searchInputValue);
+    
+//     disableSubmitButton();
+//     clearSearchBox();
+//   });
+
+// GPT Submit button:
 const submitButton = document.querySelector('.submit');
+const resultScreen = document.querySelector('.modal'); // Select the results screen
+
 
 submitButton.addEventListener('click', () => {
 
+
+  console.log("current track ID:", getCurrentTrackID());
 
     const gameTrackID = getCurrentTrackID();
     const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
@@ -127,30 +167,43 @@ submitButton.addEventListener('click', () => {
     const currentTurnAtTimeOfSubmit = getCurrentTurn();
 
     console.log("Guess is:", guessIsCorrect);
-    
 
     if (!guessIsCorrect) {
-      console.log("Checking for Spotify duplicates...");
-      checkForSpotifyDupes(searchInput.value).then(response => {
-        console.log("Included in dupes:", response);
+        console.log("Checking for Spotify duplicates...");
+        checkForSpotifyDupes(searchInput.value).then(response => {
+            console.log("Included in dupes:", response);
 
-        if (response) {
-          console.log(searchInputValue);
-          addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-        } else {
-          addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-        }
+            if (response) {
+                console.log(searchInputValue);
+                addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
 
-      })
+                getTrackByID(getCurrentTrackID()).then(response => {
+                  gameEnd(response);
+                });
+                
+            } else {
+                addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+            }
+
+            // Check total guesses after each incorrect guess
+            if (getCurrentTurn() >= allowedDurations) {
+              getTrackByID(getCurrentTrackID()).then(response => {
+                gameEnd(response);
+              });            }
+
+        });
     } else {
-      addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-    }
+        addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+        getTrackByID(getCurrentTrackID()).then(response => {
+          gameEnd(response);
+        });      }
 
     saveNewGuessToGameState(searchInputValue);
-    
+
     disableSubmitButton();
     clearSearchBox();
-  });
+});
+
 
 export function enableSubmitButton() {
   const submitButton = document.querySelector('.submit');

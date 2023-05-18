@@ -8,19 +8,19 @@
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="favicon.ico">
+</head>
 <body>
-      <div class="container">
+    <div class="container">
         <header>
             <div class="info">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-
             </div>
             <h2 class="title">Sheardle</h2>
             <div class="how-to-play">
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
             </div>
         </header>
-
+        
         <div class="guess-container">
             <div class="guess"></div>
             <div class="guess"></div>
@@ -29,9 +29,8 @@
             <div class="guess"></div>
             <div class="guess"></div>
         </div>
-
+        
         <div class="play-container">
-
             <div class="seek-bar-container">
                 <div class="seek-bar">
                     <div class="seek-bar-background"></div>
@@ -47,36 +46,32 @@
                 </div>
                 <div class="total-time">0:16</div>
             </div>
-
+        
             <div class="search-container">
                 <input type="text" class="spotify-search" placeholder="Search for the artist/title">
                 <div id="results-container" class="results-container"></div>
             </div>
-
+        
             <div class="buttons-container">
                 <button class="skip">SKIP (+1s)</button>
                 <button class="submit" disabled>SUBMIT</button>
             </div>
         </div>
-      </div>
-
-      <!-- Results screen -->
-      <div class="modal" id="resultsModal">
-        <div class="modal-content">
-            <h1 class="result-status"></h1>
-    
-            <div class="song-details">
-                <img class="album-art" src="" alt="Album Art">
-                <h2 class="song-title"></h2>
-                <h3 class="song-artist"></h3>
-                <h3 class="song-album"></h3>
-                <audio class="song-preview" controls></audio>
+        
+        <!-- Results screen -->
+        <div class="modal" id="resultsModal">
+            <div class="modal-content">
+                <h1 class="result-status"></h1>
+                <div class="song-details">
+                    <img class="album-art" src="" alt="Album Art">
+                    <h2 class="song-title"></h2>
+                    <h3 class="song-artist"></h3>
+                    <h3 class="song-album"></h3>
+                    <audio class="song-preview"></audio> 
+                </div>
+                <button class="share-results-btn">Share Results</button>
             </div>
-    
-            <button class="share-results-btn">Share Results</button>
-            <button class="play-again-btn">Play Again</button>
         </div>
     </div>
-    
 </body>
 </html>
