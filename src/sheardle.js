@@ -50,16 +50,16 @@ export async function saveNewGuess(guess) {
 }
 
 
-export function skipTurn() {
+export function addSkippedTurnToGameState() {
   // Save a null guess to represent a skipped turn
   gameState.guesses.push(null);
 
-  moveToNextTurn();
+  incrementCurrentTurnInGameState();
 }
 
-export function moveToNextTurn() {
+export function incrementCurrentTurnInGameState() {
 
-  // If final turn, move to game results screen
+  // TODO: If final turn, move to game results screen
 
   gameState.currentTurn++;
   saveGameState(gameState);

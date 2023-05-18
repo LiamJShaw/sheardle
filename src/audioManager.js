@@ -21,9 +21,24 @@ export async function initAudio(trackID) {
     audio.addEventListener("timeupdate", updateProgressBar);
 }
 
+  // Allow user to skip mid-turn and have the audio keep playing
+export function adjustAudioTimeout() {
+    const playDuration = allowedDurations[getCurrentTurn()-1];
+    endTime = Math.min(audio.duration, audio.currentTime + playDuration);
+    console.log("New end time", endTime);
+
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(pauseAudio, (endTime - audio.currentTime) * 1000);
+}
+
+
 export function playAudio() {
+    console.log("playAudio called");
+
     const playDuration = allowedDurations[getCurrentTurn()-1];
     endTime = Math.min(audio.duration, playDuration);
+    console.log("End time", endTime);
+
     audio.currentTime = 0;
     audio.play();
 
@@ -32,15 +47,8 @@ export function playAudio() {
 }
 
 export function pauseAudio() {
-    const playDuration = allowedDurations[getCurrentTurn()];
-    endTime = Math.min(audio.duration, playDuration);
-    const remainingTime = (endTime - getAudioCurrentTime()) * 1000;
-
-    clearTimeout(timeoutID);
-    timeoutID = setTimeout(() => {
-        pauseAudio();
-        // changePlayButtonIconToPlay();
-      }, remainingTime);
+    audio.pause();
+    // clearTimeout(timeoutID);
 }
 
 export function isAudioPaused() {

@@ -23,6 +23,6 @@ import { createMarkers, initUI } from './UI';
 
 setupNewGame();
 
-// These two probably shouldn't be needed?
+// These probably shouldn't be needed?
 initUI();
 createMarkers(allowedDurations);
