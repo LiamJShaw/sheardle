@@ -57,10 +57,7 @@ export function addSkippedTurnToGameState() {
   incrementCurrentTurnInGameState();
 }
 
-export function incrementCurrentTurnInGameState() {
-
-  // TODO: If final turn, move to game results screen
-
+function incrementCurrentTurnInGameState() {
   gameState.currentTurn++;
   saveGameState(gameState);
 }

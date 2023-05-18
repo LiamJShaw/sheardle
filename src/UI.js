@@ -1,13 +1,6 @@
-import { isAudioPaused, playAudio, pauseAudio, adjustAudioTimeout } from './audioManager';
+import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
+import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNewGuess, addSkippedTurnToGameState } from './sheardle';
 import { searchTrack } from './spotify';
-import { 
-  allowedDurations, 
-  getCurrentTurn,  
-  getCurrentTrackID, 
-  checkGuess, 
-  saveNewGuess, 
-  addSkippedTurnToGameState 
-} from './sheardle';
 
 export function initUI() {
   updateSeekBarBackground(getCurrentTurn());
@@ -53,6 +46,7 @@ export function clearSearchBox() {
   searchBox.value = '';
 }
 
+
 // Play/Pause button
 const playButton = document.querySelector(".play-button");
 playButton.addEventListener("click", handlePlayButtonClick);
@@ -72,32 +66,15 @@ function handlePlayButtonClick() {
 const skipButton = document.querySelector(".skip");
 skipButton.addEventListener("click", handleSkipButtonClick);
 
-// function handleSkipButtonClick() {
-//     if (getCurrentTurn() < allowedDurations.length) {
-//         addSkippedTurnToBoard(getCurrentTurn());
-//         skipTurn();
-//       }
-
-//     updateSeekBarBackground(getCurrentTurn());
-//     updateSkipButtonText();
-// }
-
 function handleSkipButtonClick() {
 
+    if (getCurrentTurn() < allowedDurations.length) {
+        addSkippedTurnToBoard(getCurrentTurn());
+        addSkippedTurnToGameState();
+      }
 
-  if (getCurrentTurn() < allowedDurations.length) {
-      addSkippedTurnToBoard(getCurrentTurn());
-      addSkippedTurnToGameState();
-  }
-
-  // If the audio is playing, adjust the timeout
-  if (!isAudioPaused()) {
-      adjustAudioTimeout();
-  }
-
-  updateSeekBarBackground(getCurrentTurn());
-  updateSkipButtonText();
-
+    updateSeekBarBackground(getCurrentTurn());
+    updateSkipButtonText();
 }
 
 function changePlayButtonIconToPlay() {
