@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S H E A R D L E</title>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -59,5 +59,24 @@
             </div>
         </div>
       </div>
+
+      <!-- Results screen -->
+      <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <h1 class="result-status"></h1>
+    
+            <div class="song-details">
+                <img class="album-art" src="" alt="Album Art">
+                <h2 class="song-title"></h2>
+                <h3 class="song-artist"></h3>
+                <h3 class="song-album"></h3>
+                <audio class="song-preview" controls></audio>
+            </div>
+    
+            <button class="share-results-btn">Share Results</button>
+            <button class="play-again-btn">Play Again</button>
+        </div>
+    </div>
+    
 </body>
 </html>

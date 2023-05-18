@@ -36,212 +36,197 @@ header {
     margin: 0 auto;
     padding: 20px 10px;
     overflow: none;
-  }
-  
-  .title {
-    /* font-size: 32px; */
-  }
-  
-  .info,
-  .how-to-play {
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  .play-container {
-    margin-bottom: 20px;
-    
-  }
-  
-  .seek-bar-container {
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-  }
-  
-  .seek-bar {
-    width: 100%;
-    height: 10px;
-    position: relative;
-    border-top: 1px solid #ffffff;
-    border-bottom: 1px solid #ffffff;
-    background-color: transparent;
-    margin: 0;
+}
+
+.title {
+}
+
+.info,
+.how-to-play {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.play-container {
+  margin-bottom: 20px;
+}
+
+.seek-bar-container {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+}
+
+.seek-bar {
+  width: 100%;
+  height: 10px;
+  position: relative;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background-color: transparent;
+  margin: 0;
 }
 
 .seek-bar-background {
-    width: 0;
-    height: 100%;
-    position: absolute;
-    background-color: #282828;
+  width: 0;
+  height: 100%;
+  position: absolute;
+  background-color: #282828;
 }
 
 .seek-bar-markers {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
 .seek-bar-progress {
-    width: 0;
-    height: 100%;
-    position: absolute;
-    background-color: #1DB954;
+  width: 0;
+  height: 100%;
+  position: absolute;
+  background-color: #1DB954;
 }
 
-
-  .progress {
-    height: 100%;
-    background-color: #1DB954;
-    width: 0;
+.progress {
+  height: 100%;
+  background-color: #1DB954;
+  width: 0;
 }
 
-  
-  .section {
-    height: 100%;
-    position: absolute;
-    background-color: #282828; /* Lighter gray background color */
-  }
-  
-  .play-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 0;
-    position: relative; /* Add position relative */
-  }
+.section {
+  height: 100%;
+  position: absolute;
+  background-color: #282828;
+}
 
-  .play-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    background-color: #00000000;
-    border: 2px solid white;
-    color: #ffffff;
-    border-radius: 50%;
-    cursor: pointer;
-    outline: none;
-    font-size: 20px; /* Adjust the icon size if necessary */
-  }
-  
-  .elapsed-time,
-  .total-time {
-    font-size: 14px;
-    position: absolute; /* Keep position absolute */
-  }
-  
-  .elapsed-time {
-    left: 0; /* Keep left positioning */
-  }
-  
-  .total-time {
-    right: 0; /* Keep right positioning */
-  }
-  
-  .search-container {
-    margin-bottom: 20px;
-    width: 100%; /* Change to 100% */
-    display: flex; /* Add display flex */
-    justify-content: center; /* Add justify-content center */
-  }
-  
-  .spotify-search {
-    width: 90%; /* Change to 90% */
-    padding: 10px;
-    background-color: #333;
-    border: solid 1px black;
-    color: #ffffff;
-    border-radius: 5px;
-    outline: none;
-  }
-  
-  .buttons-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-  }
-  
-  
-  .submit {
-    background-color: #1DB954;
-    color: #000000;
-    border: none;
-  }
+.play-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  position: relative;
+}
 
-  .skip {
-    background-color: #00000000;
-    color: #ffffff;
-    border: 1px solid white;
-  }
+.play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: #00000000;
+  border: 2px solid white;
+  color: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: none;
+  font-size: 20px;
+}
 
-  .skip,
-  .submit {
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    outline: none;
-    letter-spacing: 0.1em;
-    line-height: 1rem;
-  }
-  
-  button[disabled] {
-    background-color: gray;
-    color: white;
-    cursor: not-allowed;
-  }
-  
+.elapsed-time,
+.total-time {
+  font-size: 14px;
+  position: absolute;
+}
 
-/* Song Search */
+.elapsed-time {
+  left: 0;
+}
+
+.total-time {
+  right: 0;
+}
 
 .search-container {
-    position: relative; /* Add position relative */
-    width: 100%; /* Match the width of the search input */
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.spotify-search {
+  width: 90%;
+  padding: 10px;
+  background-color: #333;
+  border: solid 1px black;
+  color: #ffffff;
+  border-radius: 5px;
+  outline: none;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.submit {
+  background-color: #1DB954;
+  color: #000000;
+  border: none;
+}
+
+.skip {
+  background-color: #00000000;
+  color: #ffffff;
+  border: 1px solid white;
+}
+
+.skip,
+.submit {
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+  letter-spacing: 0.1em;
+  line-height: 1rem;
+}
+
+button[disabled] {
+  background-color: gray;
+  color: white;
+  cursor: not-allowed;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
 }
 
 .results-container {
-    position: absolute;
-    background-color: #333;
-    color: #ffffff;
-    width: 95%;
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #0000002b;
-    display: none;
-    /* left: 0; */
-    top: calc(100% + 5px);
-  }
-  
-  
-  .result-item {
-    padding: 8px 12px;
-    cursor: pointer;
-    color: #ffffff; /* White text color */
-  }
-  
-  .result-item:hover {
-    background-color: #282828; /* Lighter gray background color for hover */
-  }
-  
+  position: absolute;
+  background-color: #333;
+  color: #ffffff;
+  width: 95%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #0000002b;
+  display: none;
+  top: calc(100% + 5px);
+}
 
-  /* Guess container */
+.result-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #ffffff;
+}
 
-  .guess {
-    height: 40px;
-    border: 1px solid #ffffff62;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center; 
-    padding-left: 10px;
-    margin-right: 20px;
-    font-size: 16px; 
-    font-weight: 300; 
-    color: #ffffffaa; 
+.result-item:hover {
+  background-color: #282828;
+}
 
+.guess {
+  height: 40px;
+  border: 1px solid #ffffff62;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center; 
+  padding-left: 10px;
+  font-size: 16px; 
+  font-weight: 300; 
+  color: #ffffffaa; 
 }
 
 .guess-text {
@@ -251,18 +236,74 @@ header {
   flex-grow: 1;
 }
 
+.red-x-icon {
+  color: rgba(255, 0, 0, 0.75);
+  font-weight: bold;
+  margin-right: 5px;
+  padding-right: 12px;
+}
 
-  
-  .red-x-icon {
-    color: rgba(255, 0, 0, 0.75);
-    font-weight: bold;
-    margin-right: 5px;
-    padding-right: 12px;
-  }
-  
-  .green-check-icon {
-    color: green;
-    font-weight: bold;
-    margin-right: 5px;
-    padding-right: 8px; 
-  }  
+.green-check-icon {
+  color: green;
+  font-weight: bold;
+  margin-right: 5px;
+  padding-right: 8px; 
+} 
+
+
+/* Results screen */
+
+.modal {
+  display: none;  /* Hidden by default */
+  position: fixed;  /* Stay in place */
+  z-index: 1;  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;  /* Full width */
+  height: 100%;  /* Full height */
+  overflow: auto;  /* Enable scroll if needed */
+  background-color: rgb(0,0,0);  /* Fallback color */
+  background-color: rgba(0,0,0,0.4);  /* Black with opacity */
+}
+
+.modal-content {
+  background-color: #121212;
+  margin: 15% auto;  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;  /* Could be more or less, depending on screen size */
+  color: #ffffff;
+  text-align: center;
+}
+
+.album-art {
+  width: 200px;
+  height: 200px;
+}
+
+.song-title, .song-artist, .song-album {
+  font-size: 1.2em;
+}
+
+.share-results-btn, .play-again-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+  letter-spacing: 0.1em;
+  line-height: 1rem;
+  font-size: 1em;
+}
+
+.share-results-btn {
+  background-color: #1DB954;
+  color: #000000;
+  border: none;
+}
+
+.play-again-btn {
+  background-color: #00000000;
+  color: #ffffff;
+  border: 1px solid white;
+}
