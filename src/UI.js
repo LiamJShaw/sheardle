@@ -1,5 +1,5 @@
 import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
-import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNewGuess, addSkippedTurnToGameState } from './sheardle';
+import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNewGuessToGameState, addSkippedTurnToGameState, checkForSpotifyDupes } from './sheardle';
 import { searchTrack } from './spotify';
 
 export function initUI() {
@@ -7,20 +7,45 @@ export function initUI() {
 }
 
 // Guess board
-export function addGuessToBoard(guess, turn) {
-  const guessContainer = document.querySelector('.guess-container');
-  const guessDiv = guessContainer.children[turn - 1];
-  
-  // Create the red 'x' icon
-  const redXIcon = document.createElement('span');
-  redXIcon.textContent = 'x';
-  redXIcon.classList.add('red-x-icon');
-  guessDiv.appendChild(redXIcon);
+const guessContainer = document.querySelector('.guess-container');
 
-  // Add the track info text to the guess div
-  const guessText = document.createElement('p');
-  guessText.textContent = guess;
-  guessDiv.appendChild(guessText);
+function addIncorrectGuessToBoard(guess, turn) {
+
+  console.log("Current turn according to UI:", turn);
+
+    const guessDiv = guessContainer.children[turn - 1];
+
+    // Create the red 'x' icon
+    const redXIcon = document.createElement('span');
+    redXIcon.textContent = 'x';
+    redXIcon.classList.add('red-x-icon');
+    guessDiv.appendChild(redXIcon);
+  
+    // Add the track info text to the guess div
+    const guessText = document.createElement('p');
+    guessText.textContent = guess;
+    guessText.classList.add('guess-text');
+    guessDiv.appendChild(guessText);
+}
+
+function addCorrectGuessToBoard(guess, turn) {
+
+  console.log("Current turn according to UI:", turn);
+
+
+    const guessDiv = guessContainer.children[turn - 1];
+
+    // Create the green checkmark icon
+    const greenCheckIcon = document.createElement('span');
+    greenCheckIcon.textContent = '✓';
+    greenCheckIcon.classList.add('green-check-icon');
+    guessDiv.appendChild(greenCheckIcon);
+  
+    // Add the track info text to the guess div
+    const guessText = document.createElement('p');
+    guessText.textContent = guess;
+    guessText.classList.add('guess-text');
+    guessDiv.appendChild(guessText);
 }
 
 export function addSkippedTurnToBoard(turn) {
@@ -97,13 +122,31 @@ submitButton.addEventListener('click', () => {
 
 
     const gameTrackID = getCurrentTrackID();
-    const guess = checkGuess(selectedTrackID, gameTrackID);
+    const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
+    const searchInputValue = searchInput.value;
+    const currentTurnAtTimeOfSubmit = getCurrentTurn();
 
-    console.log("Guess is ", guess);
+    console.log("Guess is:", guessIsCorrect);
+    
 
-    addGuessToBoard(searchInput.value, getCurrentTurn());
+    if (!guessIsCorrect) {
+      console.log("Checking for Spotify duplicates...");
+      checkForSpotifyDupes(searchInput.value).then(response => {
+        console.log("Included in dupes:", response);
 
-    saveNewGuess(searchInput.value);
+        if (response) {
+          console.log(searchInputValue);
+          addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+        } else {
+          addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+        }
+
+      })
+    } else {
+      addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+    }
+
+    saveNewGuessToGameState(searchInputValue);
     
     disableSubmitButton();
     clearSearchBox();
@@ -212,7 +255,6 @@ searchInput.addEventListener('input', debounce((event) => {
   
             resultItem.addEventListener('click', (event) => {
               selectedTrackID = event.target.getAttribute('data-track-id');;
-              console.log('Selected track ID:', event.target.getAttribute('data-track-id'));
   
               // Update the search input with the selected result and hide the results container
               searchInput.value = event.target.textContent;

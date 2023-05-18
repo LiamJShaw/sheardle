@@ -10,10 +10,6 @@ const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
 export async function searchTrack(searchTerm, market = 'GB') {
 
-    console.log("Starting Spotify search...");
-
-    // Search for track first. If no results, search artist? Both anyway?
-
     const accessToken = await tokenManager.getAccessToken();
 
     const headers = {
@@ -34,7 +30,6 @@ export async function searchTrack(searchTerm, market = 'GB') {
 
         if (response.status === 200) {
             const data = await response.json();
-            console.log(data.tracks.items);
             return data.tracks.items;
         }
 
@@ -60,4 +55,11 @@ export async function getTrackByID(trackID, market = 'GB') {
     }
   
     return null;
-  }  
+  }
+
+export async function getAllTrackIDsBySearchQuery(searchQuery) {
+  const searchResults = await searchTrack(searchQuery);
+  const trackIDs = searchResults.map(track => track.id);
+
+  return trackIDs;
+}
