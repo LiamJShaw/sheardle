@@ -97,10 +97,19 @@ function handleSkipButtonClick() {
     if (getCurrentTurn() < allowedDurations.length) {
         addSkippedTurnToBoard(getCurrentTurn());
         addSkippedTurnToGameState();
+        updateSeekBarBackground(getCurrentTurn());
+        updateSkipButtonText();
+        
+      } else {
+
+        // End game
+        getTrackByID(getCurrentTrackID()).then(response => {
+          gameEnd(response);
+        });
+
       }
 
-    updateSeekBarBackground(getCurrentTurn());
-    updateSkipButtonText();
+
 }
 
 function changePlayButtonIconToPlay() {
@@ -116,50 +125,11 @@ function updateSkipButtonText() {
     }
 }
 
-// // Submit button
-// const submitButton = document.querySelector('.submit');
-
-// submitButton.addEventListener('click', () => {
-
-//     const gameTrackID = getCurrentTrackID();
-//     const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
-//     const searchInputValue = searchInput.value;
-//     const currentTurnAtTimeOfSubmit = getCurrentTurn();
-
-//     console.log("Guess is:", guessIsCorrect);
-
-//     if (!guessIsCorrect) {
-//       console.log("Checking for Spotify duplicates...");
-//       checkForSpotifyDupes(searchInput.value).then(response => {
-//         console.log("Included in dupes:", response);
-
-//         if (response) {
-//           console.log(searchInputValue);
-//           addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-//         } else {
-//           addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-//         }
-
-//       })
-//     } else {
-//       addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-//     }
-
-//     saveNewGuessToGameState(searchInputValue);
-    
-//     disableSubmitButton();
-//     clearSearchBox();
-//   });
-
-// GPT Submit button:
+// Submit button
 const submitButton = document.querySelector('.submit');
-const resultScreen = document.querySelector('.modal'); // Select the results screen
-
+const resultScreen = document.querySelector('.modal');
 
 submitButton.addEventListener('click', () => {
-
-
-  console.log("current track ID:", getCurrentTrackID());
 
     const gameTrackID = getCurrentTrackID();
     const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
@@ -202,6 +172,8 @@ submitButton.addEventListener('click', () => {
 
     disableSubmitButton();
     clearSearchBox();
+
+    updateSeekBarBackground(getCurrentTurn());
 });
 
 
