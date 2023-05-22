@@ -38,9 +38,6 @@ header {
     overflow: none;
 }
 
-.title {
-}
-
 .info,
 .how-to-play {
   font-size: 24px;
@@ -69,10 +66,12 @@ header {
 }
 
 .seek-bar-background {
-  width: 0;
+  width: 100%;
   height: 100%;
   position: absolute;
   background-color: #282828;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .seek-bar-markers {
@@ -82,10 +81,12 @@ header {
 }
 
 .seek-bar-progress {
-  width: 0;
+  width: 100%;
   height: 100%;
   position: absolute;
   background-color: #1DB954;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .progress {

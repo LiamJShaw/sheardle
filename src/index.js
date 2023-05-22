@@ -9,23 +9,23 @@ import { gameEnd } from './resultsScreen';
 // kill the below after testing
 import { getTrackByID } from './spotify';
 
-// const gameLoaded = loadGameState();
+const gameLoaded = loadGameState();
 
-// if (gameLoaded) {
-//     console.log("Game successfully loaded");
+if (gameLoaded) {
+    console.log("Game successfully loaded");
 
-//     // importGameState(gameLoaded);
+    importGameState(gameLoaded);
 
-//     // Loading new game anyway as I can't be bothered to delete localStorage every time
-//     setupNewGame();
+    // Loading new game anyway as I can't be bothered to delete localStorage every time
+    setupNewGame();
 
-// } else {
-//     console.log("Starting new game");
-//     setupNewGame();
-// }
+} else {
+    console.log("Starting new game");
+    setupNewGame();
+}
 
 
-setupNewGame();
+// setupNewGame();
 
 // These probably shouldn't be needed?
 initUI();

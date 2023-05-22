@@ -80,7 +80,6 @@ playButton.addEventListener("click", handlePlayButtonClick);
 function handlePlayButtonClick() {
     if (isAudioPaused()) {
         playAudio();
-        startProgressBar(duration);
         playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
     } else {
         pauseAudio();
@@ -190,46 +189,58 @@ export function disableSubmitButton() {
 // Progress bar
 const progressBar = document.querySelector(".seek-bar-progress");
 
+// export function updateProgressBar() {
+//   const progressPercentage = (getAudioCurrentTime() / 16);
+//   progressBar.style.transform = `scaleX(${progressPercentage})`;
+
+//   if (!isAudioPaused()) {
+//     requestAnimationFrame(updateProgressBar);
+//   } else {
+//     changePlayButtonIconToPlay();
+//   }
+// }
+
 export function updateProgressBar() {
-  const progressPercentage = ((getAudioCurrentTime() / 16) * 100 + 1);
-  progressBar.style.width = `${progressPercentage}%`;
+  const progressPercentage = getAudioCurrentTime() / 16;
+  const offset = 0.005;
+  progressBar.style.transform = `scaleX(${progressPercentage + offset})`;
 
   if (!isAudioPaused()) {
-      requestAnimationFrame(updateProgressBar);
+    requestAnimationFrame(updateProgressBar);
   } else {
     changePlayButtonIconToPlay(); 
   }
 }
 
+
 const seekBarBackground = document.querySelector(".seek-bar-background");
 
 function updateSeekBarBackground(turn) {
-    const playDuration = allowedDurations[turn - 1];
-    const percentage = (playDuration / 16) * 100;
-    seekBarBackground.style.width = `${percentage}%`;
+  const playDuration = allowedDurations[turn - 1];
+  const percentage = playDuration / 16;
+  seekBarBackground.style.transform = `scaleX(${percentage})`;
 }
-
 
 // Allowed length to play markers
 function createMarker(duration) {
-    const marker = document.createElement("div");
-    const percentage = (duration / 16) * 100;
+  const marker = document.createElement("div");
+  const percentage = Math.min((duration / 16) * 100, 100); // limit to maximum of 100
 
-    marker.style.width = "1px";
-    marker.style.height = "100%";
-    marker.style.position = "absolute";
-    marker.style.left = `${percentage}%`;
-    marker.style.backgroundColor = "#ffffff";
+  marker.style.width = "1px";
+  marker.style.height = "100%";
+  marker.style.position = "absolute";
+  marker.style.left = `${percentage}%`;
+  marker.style.backgroundColor = "#ffffff";
 
-    return marker;
+  return marker;
 }
 
 export function createMarkers(allowedDurations) {
-    const markersContainer = document.querySelector(".seek-bar-markers");
-    allowedDurations.forEach(duration => {
-        const marker = createMarker(duration + 0.1);
-        markersContainer.appendChild(marker);
-    });
+  const markersContainer = document.querySelector(".seek-bar-markers");
+  allowedDurations.forEach(duration => {
+      const marker = createMarker(duration);
+      markersContainer.appendChild(marker);
+  });
 }
 
 // Search bar
