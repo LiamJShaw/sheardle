@@ -5,8 +5,7 @@ const modal = document.getElementById("resultsModal");
 
 export function gameEnd(trackInfo) {
 
-    console.log(trackInfo);
-
+    
     modal.style.display = "block";
 
     // Set the song's details

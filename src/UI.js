@@ -80,6 +80,7 @@ playButton.addEventListener("click", handlePlayButtonClick);
 function handlePlayButtonClick() {
     if (isAudioPaused()) {
         playAudio();
+        startProgressBar(duration);
         playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
     } else {
         pauseAudio();
@@ -99,7 +100,7 @@ function handleSkipButtonClick() {
         addSkippedTurnToGameState();
         updateSeekBarBackground(getCurrentTurn());
         updateSkipButtonText();
-        
+
       } else {
 
         // End game
@@ -108,8 +109,6 @@ function handleSkipButtonClick() {
         });
 
       }
-
-
 }
 
 function changePlayButtonIconToPlay() {
