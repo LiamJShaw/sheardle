@@ -112,8 +112,5 @@ export function shareResult() {
   shareString += "\n\n";
   shareString += gameGuessesExport;
 
-  // Copy to clipboard
-  navigator.clipboard.writeText(resultString);
-
   return shareString;
 }
