@@ -3,18 +3,40 @@ import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNe
 import { searchTrack, getTrackByID } from './spotify';
 import { gameEnd } from './resultsScreen';
 
-export function initUI() {
+export function initUI(gameState = null) {
+
   updateSeekBarBackground(getCurrentTurn());
+  createMarkers(allowedDurations);
+
+  if (gameState) {
+    importLoadedGame(gameState);
+  }
+
+  updateSkipButtonText();
+
+}
+
+function importLoadedGame(gameData) {
+  for (let i = 0; i < gameData.guesses.length; i++) {
+    const guessData = gameData.guesses[i];
+
+    // Check the state of each guess and update the UI accordingly
+    if (guessData === null) {
+      addSkippedTurnToBoard(i);
+    } else if (guessData.correct) {
+      addCorrectGuessToBoard(guessData.guess, i);
+    } else {
+      addIncorrectGuessToBoard(guessData.guess, i);
+    }
+  }
+
 }
 
 // Guess board
 const guessContainer = document.querySelector('.guess-container');
 
 function addIncorrectGuessToBoard(guess, turn) {
-
-  console.log("Current turn according to UI:", turn);
-
-    const guessDiv = guessContainer.children[turn - 1];
+    const guessDiv = guessContainer.children[turn];
 
     // Create the red 'x' icon
     const redXIcon = document.createElement('span');
@@ -31,10 +53,7 @@ function addIncorrectGuessToBoard(guess, turn) {
 
 function addCorrectGuessToBoard(guess, turn) {
 
-  console.log("Current turn according to UI:", turn);
-
-
-    const guessDiv = guessContainer.children[turn - 1];
+    const guessDiv = guessContainer.children[turn];
 
     // Create the green checkmark icon
     const greenCheckIcon = document.createElement('span');
@@ -51,7 +70,7 @@ function addCorrectGuessToBoard(guess, turn) {
 
 export function addSkippedTurnToBoard(turn) {
   const guessContainer = document.querySelector('.guess-container');
-  const guessDiv = guessContainer.children[turn - 1];
+  const guessDiv = guessContainer.children[turn];
   
   // Create the red 'x' icon
   const redXIcon = document.createElement('span');
@@ -78,6 +97,7 @@ const playButton = document.querySelector(".play-button");
 playButton.addEventListener("click", handlePlayButtonClick);
 
 function handlePlayButtonClick() {
+
     if (isAudioPaused()) {
         playAudio();
         playButton.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
@@ -94,20 +114,24 @@ skipButton.addEventListener("click", handleSkipButtonClick);
 
 function handleSkipButtonClick() {
 
-    if (getCurrentTurn() < allowedDurations.length) {
-        addSkippedTurnToBoard(getCurrentTurn());
-        addSkippedTurnToGameState();
-        updateSeekBarBackground(getCurrentTurn());
-        updateSkipButtonText();
+  let currentTurn = getCurrentTurn();
 
-      } else {
+    if (currentTurn < allowedDurations.length - 1) {
+      
+      addSkippedTurnToBoard(currentTurn);
+      
+      updateSkipButtonText();
+      addSkippedTurnToGameState();
 
-        // End game
-        getTrackByID(getCurrentTrackID()).then(response => {
-          gameEnd(response);
-        });
+      updateSeekBarBackground(currentTurn);
+    } else {
 
-      }
+      // End game
+      getTrackByID(getCurrentTrackID()).then(response => {
+        gameEnd(response);
+      });
+
+    }
 }
 
 function changePlayButtonIconToPlay() {
@@ -115,13 +139,18 @@ function changePlayButtonIconToPlay() {
 }
 
 function updateSkipButtonText() {
-    if (getCurrentTurn() < allowedDurations.length) {
-        const skipSeconds = allowedDurations[getCurrentTurn()] - allowedDurations[getCurrentTurn() - 1];
-        skipButton.textContent = `SKIP (+${skipSeconds}s)`;
-    } else {
-        skipButton.textContent = "SKIP";
-    }
+
+  if (getCurrentTurn() >= 1 && getCurrentTurn() < allowedDurations.length) {
+    const skipSeconds = allowedDurations[getCurrentTurn()] - allowedDurations[getCurrentTurn() - 1];
+    skipButton.textContent = `SKIP (+${skipSeconds}s)`;
+  } else if (getCurrentTurn() === 0) {
+    const skipSeconds = allowedDurations[getCurrentTurn()];
+    skipButton.textContent = `SKIP (+${skipSeconds}s)`;
+  } else {
+    skipButton.textContent = "SKIP";
+  }
 }
+
 
 // Submit button
 const submitButton = document.querySelector('.submit');
@@ -129,50 +158,50 @@ const resultScreen = document.querySelector('.modal');
 
 submitButton.addEventListener('click', () => {
 
-    const gameTrackID = getCurrentTrackID();
-    const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
-    const searchInputValue = searchInput.value;
-    const currentTurnAtTimeOfSubmit = getCurrentTurn();
+  const gameTrackID = getCurrentTrackID();
+  const guessIsCorrect = checkGuess(selectedTrackID, gameTrackID);
+  const searchInputValue = searchInput.value;
 
-    console.log("Guess is:", guessIsCorrect);
+  // Update progress bar before adding guess and saving game state
+  updateSeekBarBackground(getCurrentTurn());
 
-    if (!guessIsCorrect) {
-        console.log("Checking for Spotify duplicates...");
-        checkForSpotifyDupes(searchInput.value).then(response => {
-            console.log("Included in dupes:", response);
+  if (!guessIsCorrect) {
+      console.log("Checking for Spotify duplicates...");
+      checkForSpotifyDupes(searchInput.value).then(response => {
+          console.log("Included in dupes:", response);
 
-            if (response) {
-                console.log(searchInputValue);
-                addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
+          if (response) {
+              addCorrectGuessToBoard(searchInputValue, getCurrentTurn() - 1);
 
-                getTrackByID(getCurrentTrackID()).then(response => {
-                  gameEnd(response);
-                });
-                
-            } else {
-                addIncorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-            }
-
-            // Check total guesses after each incorrect guess
-            if (getCurrentTurn() >= allowedDurations) {
               getTrackByID(getCurrentTrackID()).then(response => {
                 gameEnd(response);
-              });            }
+              });
+              
+          } else {
+              addIncorrectGuessToBoard(searchInputValue, getCurrentTurn() - 1);
+          }
 
-        });
-    } else {
-        addCorrectGuessToBoard(searchInputValue, currentTurnAtTimeOfSubmit);
-        getTrackByID(getCurrentTrackID()).then(response => {
-          gameEnd(response);
-        });      }
+          // Check total guesses after each incorrect guess
+          if (getCurrentTurn() >= allowedDurations) {
+            getTrackByID(getCurrentTrackID()).then(response => {
+              gameEnd(response);
+            });
+          }
+      });
+  } else {
+      addCorrectGuessToBoard(searchInputValue, getCurrentTurn());
+      getTrackByID(getCurrentTrackID()).then(response => {
+        gameEnd(response);
+      });      
+  }
 
-    saveNewGuessToGameState(searchInputValue);
+  saveNewGuessToGameState(searchInputValue, guessIsCorrect);
 
-    disableSubmitButton();
-    clearSearchBox();
+  disableSubmitButton();
+  clearSearchBox();
 
-    updateSeekBarBackground(getCurrentTurn());
 });
+
 
 
 export function enableSubmitButton() {
@@ -216,7 +245,7 @@ export function updateProgressBar() {
 const seekBarBackground = document.querySelector(".seek-bar-background");
 
 function updateSeekBarBackground(turn) {
-  const playDuration = allowedDurations[turn - 1];
+  const playDuration = allowedDurations[turn];
   const percentage = playDuration / 16;
   seekBarBackground.style.transform = `scaleX(${percentage})`;
 }

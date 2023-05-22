@@ -11,6 +11,9 @@ let endTime;
 let timeoutID;
 
 export async function getGameTrackAudio(trackID) {
+
+    console.log("Track ID:", trackID);
+
     const track = await getTrackByID(trackID);
 
     return new Audio(track.preview_url);
@@ -23,7 +26,7 @@ export async function initAudio(trackID) {
 
 export function playAudio() {
 
-    const playDuration = allowedDurations[getCurrentTurn()-1];
+    const playDuration = allowedDurations[getCurrentTurn()];
     endTime = playDuration;
 
     audio.currentTime = 0;

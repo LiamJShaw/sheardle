@@ -1,3 +1,5 @@
+export const START_DATE = new Date('2023-05-22');
+
 const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 '2dlEdDEmuQsrcXaAL3Znzi',
 '62LJFaYihsdVrrkgUOJC05',
@@ -44,7 +46,7 @@ const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 // // I'll base which track is the track of the day from the distance in time from this date
 
 
-function getCurrentDay(startDate) {
+export function getCurrentDay(startDate) {
     // Get the current date in local time
     let currentDate = new Date();
   
@@ -66,9 +68,5 @@ function getCurrentDay(startDate) {
 }
 
 export function getTodaysTrackID(startDate) {
-
-    // For now, we just get track 0
-    return trackSelection[0];
-
     return trackSelection[getCurrentDay(startDate)];
 }

@@ -3,33 +3,35 @@ import './styles/styles.css'
 import { setupNewGame, importGameState, getCurrentTrack, allowedDurations } from './sheardle';
 import { loadGameState } from './localStorage';
 
-import { createMarkers, initUI } from './UI';
+import { initUI } from './UI';
 
 import { gameEnd } from './resultsScreen';
-// kill the below after testing
-import { getTrackByID } from './spotify';
+
+import { getCurrentDay, getTodaysTrackID, START_DATE } from './trackSelection';
 
 const gameLoaded = loadGameState();
 
 if (gameLoaded) {
     console.log("Game successfully loaded");
 
-    importGameState(gameLoaded);
+    const todaysTrackID = getTodaysTrackID(START_DATE);
 
-    // Loading new game anyway as I can't be bothered to delete localStorage every time
-    setupNewGame();
-
+    if (gameLoaded.trackID !== todaysTrackID) {
+        console.log("Starting new game due to day change");
+        setupNewGame(START_DATE);
+        initUI();
+    } else {
+        importGameState(gameLoaded);
+        initUI(gameLoaded);
+    }
 } else {
     console.log("Starting new game");
-    setupNewGame();
+    setupNewGame(START_DATE);
+    initUI();
 }
 
+console.log("Current day is", getCurrentDay(START_DATE), "day(s) past the start date");
 
-// setupNewGame();
-
-// These probably shouldn't be needed?
-initUI();
-createMarkers(allowedDurations);
 
 // // Test results screen
 // const testTrack = getTrackByID("7J1uxwnxfQLu4APicE5Rnj");
