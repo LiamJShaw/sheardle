@@ -18,8 +18,10 @@ export function gameEnd(trackInfo) {
     console.log(shareResult());
 }
 
+
+
 document.querySelector(".share-results-btn").addEventListener('click', function() {
-    console.log(shareResult());
+    console.log("Copied results to clipboard", '\n\n', shareResult());
 
     // Copy to clipboard
     navigator.clipboard.writeText(shareResult());

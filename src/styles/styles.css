@@ -244,6 +244,13 @@ button[disabled] {
   padding-right: 12px;
 }
 
+.yellow-x-icon {
+  color: rgba(255, 215, 0, 0.75);
+  font-weight: bold;
+  margin-right: 5px;
+  padding-right: 12px;
+}
+
 .green-check-icon {
   color: green;
   font-weight: bold;

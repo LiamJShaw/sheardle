@@ -1,7 +1,7 @@
 
 import { saveGameState } from "./localStorage";
 import { initAudio } from "./audioManager";
-import { getAllTrackIDsBySearchQuery } from "./spotify";
+import { getAllTrackIDsBySearchQuery, getTrackByID } from "./spotify";
 import { getTodaysTrackID, getCurrentDay } from './trackSelection';
 
 export const allowedDurations = [1, 2, 4, 7, 11, 16];
@@ -9,32 +9,29 @@ export const allowedDurations = [1, 2, 4, 7, 11, 16];
 let gameState = {
   guesses: [],
   trackID: null,
+  won: false
 };
 
-export const getCurrentTurn = () => gameState.guesses.length;
+export const getCurrentTurn = () => gameState.guesses.length + 1;
 export const getCurrentTrackID = () => gameState.trackID;
 
-export function setupNewGame(startDate) {
+export function setupNewGame() {
 
-  // Curently just pulls the first one. Eventually it will calc it on date.
-  const todaysTrackID = getTodaysTrackID(startDate);
+  const todaysTrackID = getTodaysTrackID();
 
   gameState.guesses = [];
   gameState.trackID = todaysTrackID;
+  gameState.won = false;
 
   initAudio(todaysTrackID);
-
-  console.log(gameState);
 }
 
 export function importGameState(loadedGameState) {
   console.log("Game state loaded:", loadedGameState);
   gameState = loadedGameState;
 
-  console.log("Current turn:", gameState.guesses.length);
-  console.log("Current guesses:", gameState.guesses);
-
-  console.log("Imported game state", gameState);
+  // console.log("Current turn:", gameState.guesses.length + 1);
+  // console.log("Current guesses:", gameState.guesses);
 
   initAudio(loadedGameState.trackID);
 }
@@ -46,8 +43,6 @@ export function checkGuess(guessedTrackID, gameTrackID) {
   // console.log("Game track:", gameTrackID);
 
   return guessedTrackID === gameTrackID;
-
-  // if false, run the dupes check
 }
 
 export async function checkForSpotifyDupes(searchQuery) {
@@ -58,50 +53,54 @@ export async function checkForSpotifyDupes(searchQuery) {
     return fetchedIDs.includes(getCurrentTrackID());
 }
 
-export async function saveNewGuessToGameState(guess, correct) {
+export async function checkArtist(trackID) {
+  let guessedTrack = await getTrackByID(trackID);
+  let gameTrack = await getTrackByID(getTodaysTrackID());
 
-  gameState.guesses.push({guess, correct});
-  incrementCurrentTurnInGameState();
+  let guessedArtists = guessedTrack.artists.map(artist => artist.name);
+  let gameArtists = gameTrack.artists.map(artist => artist.name);
 
-  await saveGameState(gameState);
+  // Check if any artist in guessedTrack exists in gameTrack
+  return guessedArtists.some(artist => gameArtists.includes(artist));
+}
+
+
+export async function saveNewGuessToGameState(guess, status) {
+
+  gameState.guesses.push({guess, status});
+
+  // Save to local storage
+  saveGameState(gameState);
 
   console.log("Game state after save:", gameState);
 }
-
 
 export function addSkippedTurnToGameState() {
   // Save a null guess to represent a skipped turn
   gameState.guesses.push(null);
 
-  incrementCurrentTurnInGameState();
-}
-
-function incrementCurrentTurnInGameState() {
-  gameState.currentTurn++;
+  // Save to local storage
   saveGameState(gameState);
-}
-
-export function shareResults() {
-
 }
 
 export function shareResult() {
 
-  // Convert guesses to emojis
   let gameGuessesExport = "";
 
   gameState.guesses.forEach(guess => {
       if(guess === null) {
-          gameGuessesExport += "⬜ "; // grey circle for skipped guess
-      } else if(guess.correct) {
+          gameGuessesExport += "⬛ "; // grey circle for skipped guess
+        } else if(guess.status === "correct") {
           gameGuessesExport += "🟩 "; // green square for correct guess
+        } else if(guess.status === "semicorrect") {
+          gameGuessesExport += "🟨 "; // yellow square for correct guess
       } else {
           gameGuessesExport += "🟥 "; // red square for wrong guess
       }
   })
 
   // Calculate the number of days passed since the start date
-  let daysPassed = getCurrentDay(new Date('2023-05-21'));
+  let daysPassed = getCurrentDay();
 
   // Compose share string
   let shareString = "Sheardle "
@@ -109,8 +108,10 @@ export function shareResult() {
   shareString += daysPassed 
   shareString += ' | '
   shareString += "5/6"
-  shareString += "\n\n";
+  shareString += "\n";
   shareString += gameGuessesExport;
+  shareString += "\n\n"
+  shareString += window.location 
 
   return shareString;
 }

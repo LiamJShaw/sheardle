@@ -9,7 +9,6 @@ const clientSecret = "313a2c15fc844ca5bc22755572874ee7";
 const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
 export async function searchTrack(searchTerm, market = 'GB') {
-
     const accessToken = await tokenManager.getAccessToken();
 
     const headers = {

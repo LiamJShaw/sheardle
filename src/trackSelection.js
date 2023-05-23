@@ -1,4 +1,4 @@
-export const START_DATE = new Date('2023-05-22');
+const START_DATE = new Date('2023-05-22');
 
 const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 '2dlEdDEmuQsrcXaAL3Znzi',
@@ -46,12 +46,12 @@ const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 // // I'll base which track is the track of the day from the distance in time from this date
 
 
-export function getCurrentDay(startDate) {
+export function getCurrentDay() {
     // Get the current date in local time
     let currentDate = new Date();
-  
+    
     // Set both dates to midnight (start of the day) in local time
-    startDate = new Date(new Date(startDate).setHours(0,0,0,0));
+    let startDate = new Date(new Date(START_DATE).setHours(0,0,0,0));
     currentDate = new Date(currentDate.setHours(0,0,0,0));
   
     // Convert both dates to milliseconds
@@ -67,6 +67,6 @@ export function getCurrentDay(startDate) {
     return differenceInDays;
 }
 
-export function getTodaysTrackID(startDate) {
-    return trackSelection[getCurrentDay(startDate)];
+export function getTodaysTrackID() {
+    return trackSelection[getCurrentDay()];
 }

@@ -26,7 +26,7 @@ export async function initAudio(trackID) {
 
 export function playAudio() {
 
-    const playDuration = allowedDurations[getCurrentTurn()];
+    const playDuration = allowedDurations[getCurrentTurn() - 1];
     endTime = playDuration;
 
     audio.currentTime = 0;
