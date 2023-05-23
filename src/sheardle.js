@@ -4,6 +4,16 @@ import { initAudio } from "./audioManager";
 import { getAllTrackIDsBySearchQuery, getTrackByID } from "./spotify";
 import { getTodaysTrackID, getCurrentDay } from './trackSelection';
 
+import ClipboardJS from 'clipboard';
+
+// Initialise clipboard
+new ClipboardJS('.share-results-btn', {
+  text: function() {
+      console.log("Copied results to clipboard", '\n\n', shareResult());
+      return shareResult();
+  }
+});
+
 export const allowedDurations = [1, 2, 4, 7, 11, 16];
 
 let gameState = {

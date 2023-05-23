@@ -26,9 +26,3 @@ document.querySelector(".share-results-btn").addEventListener('click', function(
     // Copy to clipboard
     navigator.clipboard.writeText(shareResult());
 });
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
