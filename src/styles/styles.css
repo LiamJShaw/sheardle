@@ -297,13 +297,13 @@ button[disabled] {
   font-size: 2em;
   font-weight: bold;
   color: #FFFFFF;
-  margin-bottom: 1em;
+  margin-bottom: 0.5rem;
 }
 
 .song-artist {
   font-size: 1.5em;
   color: #888;
-  margin-bottom: 2em;
+  margin-bottom: 2rem;
 }
 
 .share-results-btn {
