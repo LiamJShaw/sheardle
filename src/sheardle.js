@@ -59,6 +59,9 @@ export async function checkForSpotifyDupes(searchQuery) {
     // If false, check the user's guess against what should hopefully be Spotify's dupes
     const fetchedIDs = await getAllTrackIDsBySearchQuery(searchQuery);
 
+    console.log("Current track ID:", getCurrentTrackID());
+    console.log("Dupe track IDs:", fetchedIDs);
+
     // If guessedTrackID is in the array returned, return true
     return fetchedIDs.includes(getCurrentTrackID());
 }

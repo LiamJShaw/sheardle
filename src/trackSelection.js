@@ -1,6 +1,6 @@
-const START_DATE = new Date('2023-05-23');
+const START_DATE = new Date('2023-05-22');
 
-const trackSelection = [
+const trackSelection = ['10zlwR7kvVbD9OBkeZWr3L', // This is a problem track
 '7FwBtcecmlpc1sLySPXeGE',
 '2WfaOiMkCvy7F5fcp2zZ8L',
 '77NNZQSqzLNqh2A9JhLRkg',

@@ -62,3 +62,4 @@ export async function getAllTrackIDsBySearchQuery(searchQuery) {
 
   return trackIDs;
 }
+
