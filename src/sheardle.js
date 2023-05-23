@@ -23,6 +23,7 @@ let gameState = {
 
 export const getCurrentTurn = () => gameState.guesses.length + 1;
 export const getCurrentTrackID = () => gameState.trackID;
+export const getGuesses = () => gameState.guesses;
 
 export function setupNewGame() {
 

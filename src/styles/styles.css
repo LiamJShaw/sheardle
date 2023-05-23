@@ -286,11 +286,11 @@ button[disabled] {
 }
 
 .album-art {
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   object-fit: cover;
   border-radius: 10px;
-  margin-bottom: 2em;
+  margin-bottom: 0.5rem;
 }
 
 .song-title {
@@ -320,6 +320,25 @@ button[disabled] {
 .share-results-btn:hover {
   background-color: #148b3b;
 }
+
+.results-guesses {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.results-guess {
+  width: 50px;
+  height: 10px;
+  margin: 2px;
+}
+
+.results-guess.grey { background-color: #888; }
+.results-guess.yellow { background-color: #FFD700; }
+.results-guess.red { background-color: #FF0000; }
+.results-guess.green { background-color: #008000; }
+
 
 /* Countdown timer */
 .next-sheardle {

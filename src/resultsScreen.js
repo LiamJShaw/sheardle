@@ -1,4 +1,5 @@
 import { shareResult } from "./sheardle";
+import { getGuesses } from "./sheardle";
 
 const modal = document.getElementById("resultsModal");
 
@@ -31,8 +32,34 @@ function startTimer(duration, display) {
     }, 1000);
 }
 
-export function gameEnd(trackInfo) {
 
+// export function gameEnd(trackInfo) {
+
+//     console.log(getGuesses());
+
+
+//     modal.style.display = "block";
+
+//     // Set the song's details
+//     document.querySelector(".song-title").textContent = trackInfo.name;
+//     document.querySelector(".song-artist").textContent = trackInfo.artists[0].name;
+//     document.querySelector(".album-art").src = trackInfo.album.images[0].url;
+//     document.querySelector(".song-preview").src = trackInfo.preview_url;
+
+//     let countdownElement = document.querySelector(".countdown");
+//     let timeToNextDay = getTimeToNextDay();
+//     startTimer(timeToNextDay, countdownElement);
+
+//     // Set the guess colors
+//     let guessColors = ['grey', 'yellow', 'red', 'green']; // Replace with your actual game data
+//     for (let i = 1; i <= 6; i++) {
+//         let guessElement = document.getElementById(`guess${i}`);
+//     }
+
+//     console.log(shareResult());
+// }
+
+export function gameEnd(trackInfo) {
     modal.style.display = "block";
 
     // Set the song's details
@@ -45,13 +72,55 @@ export function gameEnd(trackInfo) {
     let timeToNextDay = getTimeToNextDay();
     startTimer(timeToNextDay, countdownElement);
 
+    // Get user results
+    let userResults = getGuesses();
+
+    console.log("User results", userResults);
+
+    // for (let i = 0; i < userResults.length; i++) {
+
+    //     console.log(i);
+
+    //     let guessElement = document.getElementById(`guess${i+1}`);
+
+    //     if (!userResults[i]) {
+    //         guessElement.classList.add('grey');
+    //         return;
+    //     }
+
+    //     console.log("Status", userResults[i].status);
+
+    //     if (userResults[i].status === "correct") {
+    //         guessElement.classList.add('green');
+    //     } else if (userResults[i].status === "semicorrect") {
+    //         guessElement.classList.add('yellow');
+    //     } else if (userResults[i].status === "incorrect") {
+    //         guessElement.classList.add('red');
+    //     }
+    // }
+
+    for (let i = 0; i < 6; i++) {
+        if (userResults[i] === null | !userResults[i]) {
+          let guessElement = document.getElementById(`guess${i+1}`);
+          guessElement.classList.add('grey');
+        } else {
+          let guessElement = document.getElementById(`guess${i+1}`);
+          switch(userResults[i].status) {
+            case "correct":
+              guessElement.classList.add('green');
+              break;
+            case "semicorrect":
+              guessElement.classList.add('yellow');
+              break;
+            case "incorrect":
+              guessElement.classList.add('red');
+              break;
+            default:
+              guessElement.classList.add('grey');
+          }
+        }
+      }
+      
+
     console.log(shareResult());
 }
-
-document.querySelector(".share-results-btn").addEventListener('click', function() {
-    console.log("Copied results to clipboard", '\n\n', shareResult());
-
-    // Copy to clipboard
-    navigator.clipboard.writeText(shareResult());
-});
-

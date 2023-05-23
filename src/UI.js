@@ -36,6 +36,7 @@ function importLoadedGame(gameData) {
     currentTurn = i + 1;
     const guessData = gameData.guesses[i];
 
+
     // Check the state of each guess and update the UI accordingly
     if (guessData === null) {
       addSkippedTurnToBoard(currentTurn);
