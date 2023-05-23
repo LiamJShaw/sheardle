@@ -9,7 +9,6 @@ import ClipboardJS from 'clipboard';
 // Initialise clipboard
 new ClipboardJS('.share-results-btn', {
   text: function() {
-      console.log("Copied results to clipboard", '\n\n', shareResult());
       return shareResult();
   }
 });
@@ -117,7 +116,7 @@ export function shareResult() {
   shareString += '#'
   shareString += daysPassed 
   shareString += ' | '
-  shareString += "5/6"
+  shareString += `${gameState.guesses.length}/6` 
   shareString += "\n";
   shareString += gameGuessesExport;
   shareString += "\n\n"

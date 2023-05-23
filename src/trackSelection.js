@@ -1,9 +1,6 @@
-const START_DATE = new Date('2023-05-22');
+const START_DATE = new Date('2023-05-23');
 
-const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
-'2dlEdDEmuQsrcXaAL3Znzi',
-'62LJFaYihsdVrrkgUOJC05',
-'0HEmnAUT8PHznIAAmVXqFJ',
+const trackSelection = [
 '7FwBtcecmlpc1sLySPXeGE',
 '10zlwR7kvVbD9OBkeZWr3L',
 '2WfaOiMkCvy7F5fcp2zZ8L',
@@ -11,6 +8,10 @@ const trackSelection = ['7J1uxwnxfQLu4APicE5Rnj',
 '07j5RLJHwsm4cUb3GGoW3w',
 '22sLuJYcvZOSoLLRYev1s5',
 '3BovdzfaX4jb5KFQwoPfAw',
+'7J1uxwnxfQLu4APicE5Rnj',
+'2dlEdDEmuQsrcXaAL3Znzi',
+'62LJFaYihsdVrrkgUOJC05',
+'0HEmnAUT8PHznIAAmVXqFJ',
 '34x6hEJgGAOQvmlMql5Ige',
 '3CSpzkoL1XgDBZ1q9aDCUV',
 '28o8m1o9RGtySbmQJtAvym',
