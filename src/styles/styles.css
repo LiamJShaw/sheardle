@@ -320,3 +320,29 @@ button[disabled] {
 .share-results-btn:hover {
   background-color: #148b3b;
 }
+
+/* Countdown timer */
+.next-sheardle {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.next-sheardle p {
+  margin: 0;
+  padding: 0;
+}
+
+.next-sheardle p:first-child {
+  color: #888888;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.next-sheardle .countdown {
+  color: #bbbbbb;
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
