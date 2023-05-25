@@ -15,7 +15,7 @@ function getTimeToNextDay() {
 function startTimer(duration, display) {
     let timer = duration, hours, minutes, seconds;
     
-    setInterval(function () {
+    function updateTimer() {
         hours = parseInt(timer / 3600, 10);
         minutes = parseInt((timer % 3600) / 60, 10);
         seconds = parseInt(timer % 60, 10);
@@ -29,7 +29,17 @@ function startTimer(duration, display) {
         if (--timer < 0) {
             timer = duration;
         }
-    }, 1000);
+    }
+
+    // Run the function immediately to set the time without delay
+    updateTimer();
+    
+    // Then have it run every second
+    setInterval(updateTimer, 1000);
+}
+
+export function updateTimer() {
+
 }
 
 export function gameEnd(trackInfo) {
@@ -37,7 +47,7 @@ export function gameEnd(trackInfo) {
     let countdownElement = document.querySelector(".countdown");
     let timeToNextDay = getTimeToNextDay();
     startTimer(timeToNextDay, countdownElement);
-    
+
     modal.style.display = "block";
 
     // Set the song's details
@@ -45,8 +55,6 @@ export function gameEnd(trackInfo) {
     document.querySelector(".song-artist").textContent = trackInfo.artists[0].name;
     document.querySelector(".album-art").src = trackInfo.album.images[0].url;
     document.querySelector(".song-preview").src = trackInfo.preview_url;
-
-
 
     // Get user results
     let userResults = getGuesses();

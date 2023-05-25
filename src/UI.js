@@ -1,7 +1,7 @@
 import { isAudioPaused, playAudio, pauseAudio, getAudioCurrentTime } from './audioManager';
 import { allowedDurations, getCurrentTurn, getCurrentTrackID, checkGuess, saveNewGuessToGameState, addSkippedTurnToGameState, checkForSpotifyDupes, checkArtist } from './sheardle';
 import { searchTrack, getTrackByID } from './spotify';
-import { gameEnd } from './resultsScreen';
+import { gameEnd, initialiseTimer } from './resultsScreen';
 
 export function initUI(gameState = null) {
 
