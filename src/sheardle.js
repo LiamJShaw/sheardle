@@ -40,18 +40,12 @@ export function importGameState(loadedGameState) {
   console.log("Game state loaded:", loadedGameState);
   gameState = loadedGameState;
 
-  // console.log("Current turn:", gameState.guesses.length + 1);
-  // console.log("Current guesses:", gameState.guesses);
-
   initAudio(loadedGameState.trackID);
 }
 
 
 
 export function checkGuess(guessedTrackID, gameTrackID) {
-  // console.log("Guess:", guessedTrackID);
-  // console.log("Game track:", gameTrackID);
-
   return guessedTrackID === gameTrackID;
 }
 
@@ -115,7 +109,7 @@ export function shareResult() {
   // Fill with grey emoji plus space if the length is less than 6
   while (gameGuessesExport.length <= 6 * 2) {
 
-    console.log("Export pre-pad", gameGuessesExport);
+    console.log("Export pre-pad", gameGuessesExport.length);
 
     gameGuessesExport += "⬛ ";
   }
@@ -127,9 +121,8 @@ export function shareResult() {
   let shareString = "Sheardle "
   shareString += '#'
   shareString += daysPassed 
-  shareString += ' | '
-  shareString += `${gameState.guesses.length}/6` 
   shareString += "\n";
+  shareString += '🔊 ';
   shareString += gameGuessesExport;
   shareString += "\n\n"
   shareString += window.location 
