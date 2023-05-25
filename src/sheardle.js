@@ -113,7 +113,10 @@ export function shareResult() {
   })
 
   // Fill with grey emoji plus space if the length is less than 6
-  while (gameGuessesExport.length < 7 * 2) {
+  while (gameGuessesExport.length <= 6 * 2) {
+
+    console.log("Export pre-pad", gameGuessesExport);
+
     gameGuessesExport += "⬛ ";
   }
 
