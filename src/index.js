@@ -1,19 +1,21 @@
 import './styles/styles.css'
 
-import { setupNewGame, importGameState, getCurrentTrack, allowedDurations } from './sheardle';
-import { loadGameState } from './localStorage';
+import { setupNewGame, importGameState } from './sheardle';
+import { loadGameState, IsReturningPlayer, setPlayedBefore } from './localStorage';
 
 import { initUI } from './UI';
 
-import { gameEnd } from './resultsScreen'; // Autoload win screen on completed day
-
 import { getCurrentDay, getTodaysTrackID } from './trackSelection';
+
+import './howToPlay';
 
 console.log("Current day is", getCurrentDay(), "day(s) past the start date");
 
 const gameLoaded = loadGameState();
 
 if (gameLoaded) {
+
+    setPlayedBefore();
 
     const todaysTrackID = getTodaysTrackID();
 
@@ -30,4 +32,14 @@ if (gameLoaded) {
     console.log("Starting new game");
     setupNewGame();
     initUI();
+}
+
+const returningPlayer = IsReturningPlayer();
+
+if (returningPlayer) {
+
+    const howToPlayModal = document.getElementById('howToPlayModal');
+    howToPlayModal.style.display = 'none';
+
+    setPlayedBefore();
 }

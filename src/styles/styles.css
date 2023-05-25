@@ -261,7 +261,7 @@ button[disabled] {
 
 /* Results screen */
 
-.modal {
+#resultsModal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -273,7 +273,7 @@ button[disabled] {
   background-color: #121212;
 }
 
-.modal-content {
+#resultsModalcontent {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -364,4 +364,92 @@ button[disabled] {
   font-size: 32px;
   font-weight: bold;
   margin-top: 0.5rem;
+}
+
+/* How to play modal */
+.icon {
+  color: #7c7c7c;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center; 
+  margin-bottom: 20px;
+}
+
+#howToPlayModal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 17.5%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.7); /* Making the background darker */
+}
+
+#howToPlayContent {
+  background-color: #1a1a1a;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #8888887a;
+  width: 80%;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  font-weight: 525;
+
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 10px;
+  top: 0;
+}
+
+
+#howToPlayContent h1 {
+  text-align: center; 
+  font-size: 24px;
+  padding-bottom: 20px;
+}
+
+#howToPlayContent p {
+  margin-bottom: 10px; 
+}
+
+#howToPlayContent i {
+  margin-right: 1rem;
+}
+
+#howToPlayContent #playFirstTurn {
+  background-color: #1DB954;
+  color: #ffffff;
+  border: none;
+  padding: 10px 30px; 
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 25px; /* Adding border radius to create a pill shape */
+}
+
+#howToPlayContent #playFirstTurn:hover {
+  background-color: #888;
+  color: white;
 }

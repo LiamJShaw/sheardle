@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S H E A R D L E</title>
+    <title>Sheardle</title>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="favicon.ico">
@@ -20,6 +20,8 @@
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
             </div>
         </header>
+
+
         
         <div class="guess-container">
             <div class="guess"></div>
@@ -59,8 +61,8 @@
         </div>
         
         <!-- Results screen -->
-        <div class="modal" id="resultsModal">
-            <div class="modal-content">
+        <div id="resultsModal">
+            <div id="resultsModalcontent">
                 <h1 class="result-status"></h1>
                 <div class="song-details">
                     <img class="album-art" src="" alt="Album Art">
@@ -78,7 +80,6 @@
                     <div class="results-guess" id="guess5"></div>
                     <div class="results-guess" id="guess6"></div>
                 </div>
-                
 
                 <button class="share-results-btn">Copy Results to Clipboard</button>
 
@@ -89,6 +90,37 @@
 
             </div>
         </div>
+
+        <!-- How to play modal -->
+        <div id="howToPlayModal">
+            <div id="howToPlayContent">
+                <span id="closeHowToPlay" class="close">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+                
+                <h1>How to Play</h1>
+
+                <div class="instructions">
+                    <div class="flex-row">
+                        <i class="fa fa-music icon" aria-hidden="true"></i>
+                        <p> Listen to the clip, then find the correct artist and title in the list.</p>
+                    </div>
+                    <div class="flex-row">
+                        <i class="fa fa-volume-up icon" aria-hidden="true"></i>
+                        <p> Skipped or incorrect attempts unlock more of the track.</p>
+                    </div>
+                    <div class="flex-row">
+                        <i class="fa fa-thumbs-up icon" aria-hidden="true"></i>
+                        <p> Answer in as few tries as possible, and share your score!</p>
+                    </div>
+                    
+                </div>
+                <button id="playFirstTurn">Play</button>
+            </div>
+        </div>
+
+
+
     </div>
 </body>
 </html>

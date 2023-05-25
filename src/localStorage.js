@@ -9,3 +9,11 @@ export function saveGameState(guesses) {
 export function loadGameState() {
     return JSON.parse(localStorage.getItem('gameState'));
 }
+
+export function setPlayedBefore() {
+    localStorage.setItem('playedBefore', JSON.stringify(true));
+}
+
+export function IsReturningPlayer() {
+    return JSON.parse(localStorage.getItem('playedBefore'));
+}
