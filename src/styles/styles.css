@@ -422,6 +422,7 @@ button[disabled] {
   padding: 20px;
   border: 1px solid #8888887a;
   width: 80%;
+  max-width: 500px;
   position: relative;
 
   display: flex;
