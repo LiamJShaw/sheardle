@@ -256,8 +256,7 @@ async function handleSubmit() {
 
     // Artist found, but no dupes of track
     addSemicorrectGuessToBoard(searchInputValue, getCurrentTurn());
-    saveNewGuessToGameState(searchInputValue, "semicorrect");
-    return;
+    saveNewGuessToGameState(searchInputValue, "semicorrect");    
   }
 
   // Completely incorrect
@@ -267,7 +266,7 @@ async function handleSubmit() {
   updateSkipButtonText();
 
   // Check total guesses after each incorrect guess
-  if (getCurrentTurn() >= allowedDurations) {
+  if (getCurrentTurn() > allowedDurations.length) {
 
     getTrackByID(getCurrentTrackID()).then(response => {
       gameEnd(response);

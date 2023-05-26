@@ -38,6 +38,8 @@ if (gameLoaded) {
 // Show the How To Play screen if the user is playing the first time
 const returningPlayer = IsReturningPlayer();
 
+console.log("Returning play0r?:", returningPlayer);
+
 if (returningPlayer) {
     const howToPlayModal = document.getElementById('howToPlayModal');
     howToPlayModal.style.display = 'none';
