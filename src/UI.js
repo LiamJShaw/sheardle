@@ -202,11 +202,6 @@ function updateSkipButtonText() {
     skipButton.textContent = "SKIP";
   }
 }
-// Keepsies
-
-
-
-// keepsies
 
 // Submit button
 const submitButton = document.querySelector('.submit');
@@ -287,15 +282,18 @@ export function disableSubmitButton() {
 const progressBar = document.querySelector(".seek-bar-progress");
 
 export function updateProgressBar() {
-  const progressPercentage = getAudioCurrentTime() / 16;
-  const offset = 0.005;
-  progressBar.style.transform = `scaleX(${progressPercentage + offset})`;
+  let progressPercentage = getAudioCurrentTime() / 16;
 
   if (!isAudioPaused()) {
     requestAnimationFrame(updateProgressBar);
   } else {
+    // Fix for dodgy HTML5 Audio element accuracy
+    progressPercentage = allowedDurations[getCurrentTurn() - 1] / 16;
+
     changePlayButtonIconToPlay(); 
   }
+
+  progressBar.style.transform = `scaleX(${progressPercentage})`;
 }
 
 

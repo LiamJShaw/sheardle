@@ -28,7 +28,7 @@ export async function initAudio(trackID) {
 function updateElapsedTime() {
     // get the current time in seconds
     let currentTime = Math.floor(audio.currentTime);
-    
+
     // convert it to minutes:seconds format
     let minutes = Math.floor(currentTime / 60);
     let seconds = currentTime % 60;
@@ -57,7 +57,7 @@ export function playAudio() {
     
 
     clearTimeout(timeoutID);
-    timeoutID = setTimeout(pauseAudio, endTime * 1000);
+    timeoutID = setTimeout(pauseAudio, endTime * 1024);
 }
 
 export function pauseAudio() {
@@ -72,3 +72,68 @@ export function isAudioPaused() {
 export function getAudioCurrentTime() {
     return audio.currentTime;
 }
+
+// Geept 1:
+
+// import { getCurrentTurn, allowedDurations } from './sheardle.js';
+// import { getTrackByID } from './spotify.js';
+// import { updateProgressBar } from './UI.js';
+
+// let audioContext = new AudioContext();
+// let bufferSource = null;
+// let audioBuffer = null;
+// let timeoutID;
+
+// async function getAudioBuffer(trackID) {
+//     console.log("Track ID:", trackID);
+//     const track = await getTrackByID(trackID);
+
+//     const response = await fetch(track.preview_url);
+//     const arrayBuffer = await response.arrayBuffer();
+//     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+//     return audioBuffer;
+// }
+
+// export async function initAudio(trackID) {
+//     audioBuffer = await getAudioBuffer(trackID);
+// }
+
+// function playChunk(startTime, duration) {
+//     if (bufferSource) {
+//         bufferSource.stop();
+//         bufferSource = null;
+//     }
+
+//     bufferSource = audioContext.createBufferSource();
+//     bufferSource.buffer = audioBuffer;
+//     bufferSource.connect(audioContext.destination);
+//     bufferSource.start(audioContext.currentTime, startTime, duration);
+
+//     console.log(audioContext.destination);
+// }
+
+// export function playAudio() {
+//     const playDuration = allowedDurations[getCurrentTurn() - 1];
+
+//     if (getCurrentTurn() < 7) {
+//         playChunk(0, playDuration);
+//     }
+
+//     clearTimeout(timeoutID);
+//     timeoutID = setTimeout(pauseAudio, playDuration * 1000);
+// }
+
+// export function pauseAudio() {
+//     if (bufferSource) {
+//         bufferSource.stop();
+//         bufferSource = null;
+//     }
+//     clearTimeout(timeoutID);
+// }
+
+// export function isAudioPaused() {
+    
+//     // If there's no bufferSource, it's paused
+//     return !bufferSource;
+// }
