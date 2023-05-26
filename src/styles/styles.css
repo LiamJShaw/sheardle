@@ -439,8 +439,8 @@ button[disabled] {
   font-size: 28px;
   font-weight: bold;
   position: absolute;
-  right: 10px;
-  top: 0;
+  right: 0px;
+  top: 5px;
 }
 
 
