@@ -43,7 +43,8 @@ console.log("Returning play0r?:", returningPlayer);
 if (returningPlayer) {
     const howToPlayModal = document.getElementById('howToPlayModal');
     howToPlayModal.style.display = 'none';
+} else {
+    // Set the flag so that it doesn't show next time
+    setPlayedBefore();
 }
 
-// Set the flag so that it doesn't show next time
-setPlayedBefore();
