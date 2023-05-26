@@ -30,7 +30,11 @@ export function playAudio() {
     endTime = playDuration;
 
     audio.currentTime = 0;
-    audio.play();
+
+    if (getCurrentTurn() < 7) {
+        audio.play();
+    }
+    
 
     clearTimeout(timeoutID);
     timeoutID = setTimeout(pauseAudio, endTime * 1000);

@@ -43,8 +43,6 @@ export function importGameState(loadedGameState) {
   initAudio(loadedGameState.trackID);
 }
 
-
-
 export function checkGuess(guessedTrackID, gameTrackID) {
   return guessedTrackID === gameTrackID;
 }
@@ -92,6 +90,11 @@ export function addSkippedTurnToGameState() {
 
 export function shareResult() {
 
+  // Fill with skips if the length is less than 6
+  while (gameState.guesses.length < 6) {
+    gameState.guesses.push(null)
+  }
+
   let gameGuessesExport = "";
 
   gameState.guesses.forEach(guess => {
@@ -105,14 +108,6 @@ export function shareResult() {
           gameGuessesExport += "🟥 "; // red square for wrong guess
       }
   })
-
-  // Fill with grey emoji plus space if the length is less than 6
-  while (gameGuessesExport.length <= 6 * 2) {
-
-    console.log("Export pre-pad", gameGuessesExport.length);
-
-    gameGuessesExport += "⬛ ";
-  }
 
   // Calculate the number of days passed since the start date
   let daysPassed = getCurrentDay();

@@ -8,6 +8,7 @@ import { initUI } from './UI';
 import { getCurrentDay, getTodaysTrackID } from './trackSelection';
 
 import './howToPlay';
+import './createSheardle';
 
 console.log("Current day is", getCurrentDay(), "day(s) past the start date");
 
@@ -34,12 +35,13 @@ if (gameLoaded) {
     initUI();
 }
 
+// Show the How To Play screen if the user is playing the first time
 const returningPlayer = IsReturningPlayer();
 
 if (returningPlayer) {
-
     const howToPlayModal = document.getElementById('howToPlayModal');
     howToPlayModal.style.display = 'none';
-
-    setPlayedBefore();
 }
+
+// Set the flag so that it doesn't show next time
+setPlayedBefore();

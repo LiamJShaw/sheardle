@@ -38,10 +38,6 @@ function startTimer(duration, display) {
     setInterval(updateTimer, 1000);
 }
 
-export function updateTimer() {
-
-}
-
 export function gameEnd(trackInfo) {
 
     let countdownElement = document.querySelector(".countdown");

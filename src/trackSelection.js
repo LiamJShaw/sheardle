@@ -3,7 +3,6 @@ const START_DATE = new Date('2023-05-23');
 const trackSelection = [
 '7FwBtcecmlpc1sLySPXeGE',
 '2WfaOiMkCvy7F5fcp2zZ8L',
-'77NNZQSqzLNqh2A9JhLRkg',
 '07j5RLJHwsm4cUb3GGoW3w',
 '22sLuJYcvZOSoLLRYev1s5',
 '3BovdzfaX4jb5KFQwoPfAw',
@@ -40,7 +39,8 @@ const trackSelection = [
 '6I4snLrVOrJsLdd43isc27',
 '4sz1Ng2Cgidfqqiy0pNL6R',
 '54X78diSLoUDI3joC2bjMz',
-'0QeI79sp1vS8L3JgpEO7mD'];
+'0QeI79sp1vS8L3JgpEO7mD',
+'77NNZQSqzLNqh2A9JhLRkg'];
 
 // // In this function, I'm going to set up a "start date" for the app.
 // // I'll base which track is the track of the day from the distance in time from this date

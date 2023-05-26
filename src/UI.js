@@ -169,10 +169,11 @@ function handleSkipButtonClick() {
     
     addSkippedTurnToBoard(getCurrentTurn());
     
-    updateSkipButtonText();
     updateSeekBarBackground(getCurrentTurn());
 
     addSkippedTurnToGameState();
+
+    updateSkipButtonText();
 
   } else {
 
@@ -191,7 +192,7 @@ function changePlayButtonIconToPlay() {
 
 function updateSkipButtonText() {
 
-  if (getCurrentTurn() >= 1 && getCurrentTurn() < allowedDurations.length) {
+  if (getCurrentTurn() > 0 && getCurrentTurn() < allowedDurations.length) {
     const skipSeconds = allowedDurations[getCurrentTurn()] - allowedDurations[getCurrentTurn() - 1];
     skipButton.textContent = `SKIP (+${skipSeconds}s)`;
   } else if (getCurrentTurn() === 0) {
@@ -236,13 +237,9 @@ async function handleSubmit() {
   // Check if artist is correct
   let artistCheck = await checkArtist(selectedTrackID);
 
-  console.log("Artist check is", artistCheck);
-
   // Correct artist submitted
   if (artistCheck) {
     let dupesCheck = await checkForSpotifyDupes(searchInputValue)
-
-    console.log("Dupes check is", dupesCheck);
 
     // Correct answer found in dupes
     if (dupesCheck) {
@@ -266,6 +263,8 @@ async function handleSubmit() {
   // Completely incorrect
   addIncorrectGuessToBoard(searchInputValue, getCurrentTurn());
   saveNewGuessToGameState(searchInputValue, "incorrect");
+
+  updateSkipButtonText();
 
   // Check total guesses after each incorrect guess
   if (getCurrentTurn() >= allowedDurations) {
