@@ -22,7 +22,27 @@ export async function getGameTrackAudio(trackID) {
 export async function initAudio(trackID) {
     audio = await getGameTrackAudio(trackID);
     audio.addEventListener("timeupdate", updateProgressBar);
+    audio.addEventListener("timeupdate", updateElapsedTime);
 }
+
+function updateElapsedTime() {
+    // get the current time in seconds
+    let currentTime = Math.floor(audio.currentTime);
+    
+    // convert it to minutes:seconds format
+    let minutes = Math.floor(currentTime / 60);
+    let seconds = currentTime % 60;
+
+    // pad seconds with leading zero if less than 10
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+
+    // get the elapsed-time element and update its text content
+    let elapsedTimeElement = document.querySelector(".elapsed-time");
+    elapsedTimeElement.textContent = `${minutes}:${seconds}`;
+}
+
 
 export function playAudio() {
 

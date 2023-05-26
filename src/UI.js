@@ -202,7 +202,11 @@ function updateSkipButtonText() {
     skipButton.textContent = "SKIP";
   }
 }
+// Keepsies
 
+
+
+// keepsies
 
 // Submit button
 const submitButton = document.querySelector('.submit');
@@ -230,15 +234,8 @@ async function handleSubmit() {
     getTrackByID(getCurrentTrackID()).then(response => {
       gameEnd(response);
     });
-    
-    return;
-  }
+  } else if (await checkArtist(selectedTrackID)) {
 
-  // Check if artist is correct
-  let artistCheck = await checkArtist(selectedTrackID);
-
-  // Correct artist submitted
-  if (artistCheck) {
     let dupesCheck = await checkForSpotifyDupes(searchInputValue)
 
     // Correct answer found in dupes
@@ -257,20 +254,20 @@ async function handleSubmit() {
     // Artist found, but no dupes of track
     addSemicorrectGuessToBoard(searchInputValue, getCurrentTurn());
     saveNewGuessToGameState(searchInputValue, "semicorrect");    
+  } else {
+    // Completely incorrect
+    addIncorrectGuessToBoard(searchInputValue, getCurrentTurn());
+    saveNewGuessToGameState(searchInputValue, "incorrect");
   }
-
-  // Completely incorrect
-  addIncorrectGuessToBoard(searchInputValue, getCurrentTurn());
-  saveNewGuessToGameState(searchInputValue, "incorrect");
-
+  
   updateSkipButtonText();
-
+  
   // Check total guesses after each incorrect guess
   if (getCurrentTurn() > allowedDurations.length) {
-
+  
     getTrackByID(getCurrentTrackID()).then(response => {
       gameEnd(response);
-
+  
     });
   }
 }
